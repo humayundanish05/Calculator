@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dark Rounded Calculator</title>
+  <style>
+    :root{--bg:#000;--panel:#0f0f10;--button:#252525;--accent:#ff8a00;--muted:#6b6b6b}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    body{background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:18px 12px;color:#fff}
+    .calculator{width:380px;max-width:95vw;border-radius:18px;padding:18px;background:linear-gradient(180deg,var(--panel),#070707);box-shadow:0 8px 30px rgba(0,0,0,0.7);overflow:hidden}
+    .topbar{display:flex;justify-content:space-between;align-items:center;color:#fff7;padding:6px 2px 12px 2px;font-weight:600}
+    .topbar .title{font-size:20px}
+    .topbar .subtitle{font-size:18px;color:#777}
+    .display{padding:8px 12px 18px;min-height:120px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end}
+    .history{color:#999;font-size:15px;margin-bottom:8px;opacity:0.7}
+    .output{font-size:64px;font-weight:600;color:#fff;line-height:1}
+    .pad{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:8px 0 12px}
+    .btn{background:var(--button);border-radius:18px;padding:18px 10px;border:0;font-size:22px;color:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,0.25);cursor:pointer;user-select:none}
+    .btn:active{transform:translateY(1px)}
+    .func{background:#2f2f2f;color:var(--accent);font-weight:600}
+    .op{background:#2f2f2f;color:var(--accent);font-weight:600}
+    .eq{background:var(--accent);color:#fff;border-radius:16px;font-weight:700}
+    .special{background:#2f2f2f}
+    .num{background:#2a2a2a}
+    @media (max-width:420px){.output{font-size:48px}.btn{padding:14px 8px;font-size:20px}}
+  </style>
+</head>
+<body>
+  <main class="calculator" role="application" aria-label="Calculator">
+    <header class="topbar">
+      <div class="title">Calculator</div>
+      <div class="subtitle">Converter</div>
+    </header>
+
+    <section class="display">
+      <div class="history" id="history">2,000-2%= 1,960</div>
+      <div class="output" id="output">0</div>
+    </section>
+
+    <section class="pad" id="pad">
+      <button class="btn func" data-action="clear">AC</button>
+      <button class="btn func" data-action="back">&#9003;</button>
+      <button class="btn func" data-action="percent">%</button>
+      <button class="btn op" data-action="/">&#247;</button>
+
+      <button class="btn num" data-num="7">7</button>
+      <button class="btn num" data-num="8">8</button>
+      <button class="btn num" data-num="9">9</button>
+      <button class="btn op" data-action="*">&#215;</button>
+
+      <button class="btn num" data-num="4">4</button>
+      <button class="btn num" data-num="5">5</button>
+      <button class="btn num" data-num="6">6</button>
+      <button class="btn op" data-action="-">&minus;</button>
+
+      <button class="btn num" data-num="1">1</button>
+      <button class="btn num" data-num="2">2</button>
+      <button class="btn num" data-num="3">3</button>
+      <button class="btn op" data-action="+">+</button>
+
+      <button class="btn special" data-action="neg">&#177;</button>
+      <button class="btn num" data-num="0">0</button>
+      <button class="btn special" data-action="dot">.</button>
+      <button class="btn eq" data-action="=">=</button>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const outputEl = document.getElementById('output');
+      const historyEl = document.getElementById('history');
+      let current = '0', prev = null, op = null, resetNext = false;
+
+      function refresh(){ outputEl.textContent = current }
+      function inputNumber(n){
+        if(resetNext){ current = '0'; resetNext = false }
+        if(n === '.' && current.includes('.')) return;
+        if(current === '0' && n !== '.') current = n; else current = current + n;
+      }
+      function applyOp(newOp){ if(op && !resetNext) compute(); prev = parseFloat(current); op = newOp; resetNext = true }
+      function compute(){ if(!op || prev === null) return; const a = prev; const b = parseFloat(current); let res = 0; switch(op){ case '+': res = a + b; break; case '-': res = a - b; break; case '*': res = a * b; break; case '/': res = b === 0 ? 'Error' : a / b; break } current = String(res); historyEl.textContent = `${a}${op}${b} = ${current}`; op = null; prev = null; resetNext = true }
+      function percent(){ current = String(parseFloat(current) / 100) }
+      function negate(){ current = String(parseFloat(current) * -1) }
+      function clearAll(){ current = '0'; prev = null; op = null; historyEl.textContent = '' }
+
+      document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const num = btn.dataset.num;
+          const action = btn.dataset.action;
+          if(num !== undefined){ inputNumber(num); refresh(); return }
+          if(action){
+            if(action === 'clear') clearAll();
+            else if(action === 'back'){ current = current.slice(0,-1) || '0' }
+            else if(action === 'percent') percent();
+            else if(action === 'neg') negate();
+            else if(action === 'dot') inputNumber('.');
+            else if(action === '=') compute();
+            else if(['+','-','*','/'].includes(action)) applyOp(action);
+            refresh();
+          }
+        })
+      })
+      refresh();
+
+      // keyboard support (optional)
+      window.addEventListener('keydown', (e)=>{
+        if(e.key >= '0' && e.key <= '9') { inputNumber(e.key); refresh(); }
+        else if(e.key === '.') { inputNumber('.'); refresh() }
+        else if(e.key === 'Backspace') { current = current.slice(0,-1)||'0'; refresh() }
+        else if(e.key === 'Enter' || e.key === '=') { compute(); refresh() }
+        else if(['+','-','*','/'].includes(e.key)){ applyOp(e.key); refresh() }
+      })
+    })();
+  </script>
+</body>
+</html>
