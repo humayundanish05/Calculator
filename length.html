@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Length Converter</title>
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .converter{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input, select{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  input{
+    width:100%;
+  }
+
+  .result{
+    margin-top:10px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+
+  button{
+    padding:10px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+
+  button:hover{
+    background:#222;
+  }
+</style>
+</head>
+<body>
+
+<h1>Length Converter</h1>
+
+<div class="converter">
+  <input type="number" id="inputValue" placeholder="Enter value" />
+
+  <select id="fromUnit">
+    <option value="m">Meter (m)</option>
+    <option value="cm">Centimeter (cm)</option>
+    <option value="km">Kilometer (km)</option>
+    <option value="ft">Feet (ft)</option>
+    <option value="in">Inches (in)</option>
+    <option value="mi">Mile (mi)</option>
+  </select>
+
+  <select id="toUnit">
+    <option value="m">Meter (m)</option>
+    <option value="cm">Centimeter (cm)</option>
+    <option value="km">Kilometer (km)</option>
+    <option value="ft">Feet (ft)</option>
+    <option value="in">Inches (in)</option>
+    <option value="mi">Mile (mi)</option>
+  </select>
+
+  <button onclick="convertLength()">Convert</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function convertLength(){
+  const value = parseFloat(document.getElementById('inputValue').value);
+  const from = document.getElementById('fromUnit').value;
+  const to = document.getElementById('toUnit').value;
+
+  if(isNaN(value)){
+    document.getElementById('result').textContent = "Enter a valid number!";
+    return;
+  }
+
+  const units = {
+    m:1,
+    cm:0.01,
+    km:1000,
+    ft:0.3048,
+    in:0.0254,
+    mi:1609.34
+  };
+
+  const result = value * units[from] / units[to];
+  document.getElementById('result').textContent = `Result: ${result} ${to}`;
+}
+</script>
+
+</body>
+</html>
