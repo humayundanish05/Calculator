@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dark Neon Calculator</title>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<html lang="en">  
+<head>  
+<meta charset="utf-8" />  
+<meta name="viewport" content="width=device-width,initial-scale=1" />  
+<title>Dark Neon Calculator</title>  
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">  
 <style>
   :root {
     --bg: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
@@ -127,120 +127,130 @@
     .btn{padding:14px 8px;font-size:20px;}
   }
 </style>
-</head>
+</head>  
 
-<body>
-  <main class="calculator" role="application" aria-label="Calculator">
-    <header class="topbar">
-      <a href="index.html">calculator</a>
+<body>  
+  <main class="calculator" role="application" aria-label="Calculator">  
+    <header class="topbar">  
+      <a href="index.html">calculator</a>  
       <a href="convert.html" class="active">converter</a>
-       <a href="history.html" class="active">cal.history</a>
-    </header>
+      <a href="history.html">history</a>
+    </header>  
 
-    <section class="display">
-      <div class="history" id="history">2,000-2%= 1,960</div>
-      <div class="output" id="output">0</div>
-    </section>
+<section class="display">  
+  <div class="history" id="history">2,000-2%= 1,960</div>  
+  <div class="output" id="output">0</div>  
+</section>  
 
-    <section class="pad" id="pad">
-      <button class="btn func" data-action="clear">AC</button>
-      <button class="btn func" data-action="back">&#9003;</button>
-      <button class="btn func" data-action="percent">%</button>
-      <button class="btn op" data-action="div">&#247;</button>
+<section class="pad" id="pad">  
+  <button class="btn func" data-action="clear">AC</button>  
+  <button class="btn func" data-action="back">&#9003;</button>  
+  <button class="btn func" data-action="percent">%</button>  
+  <button class="btn op" data-action="div">&#247;</button>  
 
-      <button class="btn num" data-num="7">7</button>
-      <button class="btn num" data-num="8">8</button>
-      <button class="btn num" data-num="9">9</button>
-      <button class="btn op" data-action="mul">&#215;</button>
+  <button class="btn num" data-num="7">7</button>  
+  <button class="btn num" data-num="8">8</button>  
+  <button class="btn num" data-num="9">9</button>  
+  <button class="btn op" data-action="mul">&#215;</button>  
 
-      <button class="btn num" data-num="4">4</button>
-      <button class="btn num" data-num="5">5</button>
-      <button class="btn num" data-num="6">6</button>
-      <button class="btn op" data-action="sub">&minus;</button>
+  <button class="btn num" data-num="4">4</button>  
+  <button class="btn num" data-num="5">5</button>  
+  <button class="btn num" data-num="6">6</button>  
+  <button class="btn op" data-action="sub">&minus;</button>  
 
-      <button class="btn num" data-num="1">1</button>
-      <button class="btn num" data-num="2">2</button>
-      <button class="btn num" data-num="3">3</button>
-      <button class="btn op" data-action="add">+</button>
+  <button class="btn num" data-num="1">1</button>  
+  <button class="btn num" data-num="2">2</button>  
+  <button class="btn num" data-num="3">3</button>  
+  <button class="btn op" data-action="add">+</button>  
 
-      <button class="btn special" data-action="neg">&#177;</button>
-      <button class="btn num" data-num="0">0</button>
-      <button class="btn special" data-action="dot">.</button>
-      <button class="btn eq" data-action="=">=</button>
-    </section>
-  </main>
+  <button class="btn special" data-action="neg">&#177;</button>  
+  <button class="btn num" data-num="0">0</button>  
+  <button class="btn special" data-action="dot">.</button>  
+  <button class="btn eq" data-action="=">=</button>  
+</section>
 
-  <script>
-    (function(){
-      const outputEl = document.getElementById('output');
-      const historyEl = document.getElementById('history');
-      let current = '0', prev = null, op = null, resetNext = false;
+</main>
 
-      function refresh(){ outputEl.textContent = current }
+<script>  
+(function(){  
+  const outputEl = document.getElementById('output');  
+  const historyEl = document.getElementById('history');  
+  let current = '0', prev = null, op = null, resetNext = false;  
 
-      function inputNumber(n){
-        if(resetNext){ current = '0'; resetNext = false }
-        if(n === '.' && current.includes('.')) return;
-        if(current === '0' && n !== '.') current = n; else current += n;
-      }
+  function refresh(){ outputEl.textContent = current }  
 
-      function applyOp(newOp){
-        if(op && !resetNext) compute();
-        prev = parseFloat(current);
-        op = newOp;
-        resetNext = true;
+  function inputNumber(n){  
+    if(resetNext){ current = '0'; resetNext = false }  
+    if(n === '.' && current.includes('.')) return;  
+    if(current === '0' && n !== '.') current = n; else current += n;  
+  }  
 
-        /* --- ADDED LINE HERE --- */
-        historyEl.textContent = prev + " " + op;
-      }
+  function applyOp(newOp){  
+    if(op && !resetNext) compute();  
+    prev = parseFloat(current);  
+    op = newOp;  
+    resetNext = true;  
 
-      function compute(){
-        if(!op || prev === null) return;
-        const a = prev, b = parseFloat(current);
-        let res = 0;
+    /* SHOW LIVE EXPRESSION */
+    historyEl.textContent = prev + " " + op;
+  }  
 
-        switch(op){
-          case '+': res = a + b; break;
-          case '-': res = a - b; break;
-          case '*': res = a * b; break;
-          case '/': res = b === 0 ? 'Error' : a / b; break;
-        }
+  function compute(){  
+    if(!op || prev === null) return;
+    const a = prev, b = parseFloat(current);  
+    let res = 0;  
 
-        current = String(res);
-        historyEl.textContent = `${a}${op}${b} = ${current}`;
-        op = null;
-        prev = null;
-        resetNext = true;
-      }
+    switch(op){  
+      case '+': res = a + b; break;  
+      case '-': res = a - b; break;  
+      case '*': res = a * b; break;  
+      case '/': res = b === 0 ? 'Error' : a / b; break;  
+    }  
 
-      function percent(){ current = String(parseFloat(current)/100) }
-      function negate(){ current = String(parseFloat(current)*-1) }
-      function clearAll(){ current='0'; prev=null; op=null; historyEl.textContent='' }
+    current = String(res);  
+    const line = `${a}${op}${b} = ${current}`;  
+    historyEl.textContent = line;
 
-      document.querySelectorAll('.btn').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-          const num = btn.dataset.num;
-          const action = btn.dataset.action;
+    /* SAVE TO LOCAL STORAGE */
+    const saved = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+    saved.push(line);
+    localStorage.setItem("calcHistory", JSON.stringify(saved));
 
-          if(num !== undefined){ inputNumber(num); refresh(); return }
+    op = null;  
+    prev = null;  
+    resetNext = true;  
+  }  
 
-          if(action){
-            if(action==='clear') clearAll();
-            else if(action==='back'){ current = current.slice(0,-1) || '0' }
-            else if(action==='percent') percent();
-            else if(action==='neg') negate();
-            else if(action==='dot') inputNumber('.');
-            else if(action==='=') compute();
-            else if(['add','sub','mul','div'].includes(action)){
-              const map = { add: '+', sub: '-', mul: '*', div: '/' };
-              applyOp(map[action]);
-            }
-            refresh();
-          }
-        })
-      })
-      refresh();
-    })();
-  </script>
-</body>
+  function percent(){ current = String(parseFloat(current)/100) }  
+  function negate(){ current = String(parseFloat(current)*-1) }  
+  function clearAll(){ current='0'; prev=null; op=null; historyEl.textContent='' }  
+
+  document.querySelectorAll('.btn').forEach(btn=>{  
+    btn.addEventListener('click',()=>{  
+      const num = btn.dataset.num;  
+      const action = btn.dataset.action;  
+
+      if(num !== undefined){ inputNumber(num); refresh(); return }  
+
+      if(action){  
+        if(action==='clear') clearAll();  
+        else if(action==='back'){ current=current.slice(0,-1)||'0' }  
+        else if(action==='percent') percent();  
+        else if(action==='neg') negate();  
+        else if(action==='dot') inputNumber('.');  
+        else if(action==='=') compute();  
+        else if(['add','sub','mul','div'].includes(action)){  
+          const map = { add: '+', sub: '-', mul: '*', div: '/' };  
+          applyOp(map[action]);  
+        }  
+        refresh();  
+      }  
+    })  
+  })  
+
+  refresh();  
+})();  
+</script>  
+
+</body>  
 </html>
