@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Currency Converter</title>
+  <style>
+    body { background:#000; color:#fff; font-family:Inter,system-ui; display:flex; flex-direction:column; align-items:center; padding:30px 0; }
+    h1 { margin-bottom:30px; font-size:28px; }
+    .converter { display:flex; flex-direction:column; gap:20px; width:90%; max-width:400px; }
+    input, select, button { padding:10px; font-size:16px; border-radius:6px; border:none; outline:none; }
+    button { background:#111; color:#0f0; cursor:pointer; }
+    button:hover { background:#222; }
+    .result { margin-top:10px; font-size:20px; text-align:center; color:#0f0; }
+  </style>
+</head>
+<body>
+
+  <h1>Currency Converter</h1>
+
+  <div class="converter">
+    <input type="number" id="amount" placeholder="Enter amount" />
+
+    <select id="fromCurr">
+      <option value="PKR">Pakistani Rupee (PKR)</option>
+      <option value="USD">US Dollar (USD)</option>
+      <option value="EUR">Euro (EUR)</option>
+      <option value="GBP">British Pound (GBP)</option>
+      <option value="AED">UAE Dirham (AED)</option>
+      <option value="SAR">Saudi Riyal (SAR)</option>
+      <option value="AUD">Australian Dollar (AUD)</option>
+      <option value="CAD">Canadian Dollar (CAD)</option>
+      <option value="JPY">Japanese Yen (JPY)</option>
+      <option value="INR">Indian Rupee (INR)</option>
+      <!-- add more as needed -->
+    </select>
+
+    <select id="toCurr">
+      <option value="PKR">Pakistani Rupee (PKR)</option>
+      <option value="USD">US Dollar (USD)</option>
+      <option value="EUR">Euro (EUR)</option>
+      <option value="GBP">British Pound (GBP)</option>
+      <option value="AED">UAE Dirham (AED)</option>
+      <option value="SAR">Saudi Riyal (SAR)</option>
+      <option value="AUD">Australian Dollar (AUD)</option>
+      <option value="CAD">Canadian Dollar (CAD)</option>
+      <option value="JPY">Japanese Yen (JPY)</option>
+      <option value="INR">Indian Rupee (INR)</option>
+      <!-- add more as needed -->
+    </select>
+
+    <button onclick="convertCurrency()">Convert</button>
+
+    <div class="result" id="result">Result: </div>
+  </div>
+
+  <script>
+    const rates = {
+      // approximate rates in respect to PKR (based on recent data) 0
+      PKR: 1,
+      USD: 281.88,
+      EUR: 325.61,
+      GBP: 371.28,
+      AED: 76.75,
+      SAR: 75.45,
+      AUD: 181.85,
+      CAD: 199.66,
+      JPY: 1.80,
+      INR: 3.19
+      // add more if want
+    };
+
+    function convertCurrency(){
+      const amt = parseFloat(document.getElementById('amount').value);
+      const from = document.getElementById('fromCurr').value;
+      const to = document.getElementById('toCurr').value;
+
+      if(isNaN(amt)){
+        document.getElementById('result').textContent = "Enter valid number!";
+        return;
+      }
+      // convert: from → PKR → to
+      const inPKR = amt * rates[from];
+      const out = inPKR / rates[to];
+      document.getElementById('result').textContent = `Result: ${out.toFixed(2)} ${to}`;
+    }
+  </script>
+
+</body>
+</html>
