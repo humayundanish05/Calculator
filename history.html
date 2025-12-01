@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Calculation History</title>
+
+<style>
+  body{
+    margin:0;
+    padding:0;
+    background:#0a0a0a;
+    font-family:Inter, sans-serif;
+    color:#fff;
+  }
+  header{
+    padding:15px;
+    background:#111;
+    font-size:20px;
+    font-weight:600;
+    border-bottom:1px solid #222;
+  }
+  .wrap{
+    padding:20px;
+  }
+  .entry{
+    padding:12px;
+    margin-bottom:10px;
+    background:#131313;
+    border-left:4px solid #0ff;
+    font-size:18px;
+  }
+</style>
+
+</head>
+<body>
+
+<header>History</header>
+
+<div class="wrap" id="historyList">
+  <!-- JS yahan entries inject karega -->
+</div>
+
+<script>
+  const list = document.getElementById("historyList");
+
+  const saved = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+
+  saved.forEach(h=>{
+    const div = document.createElement("div");
+    div.className = "entry";
+    div.textContent = h;
+    list.appendChild(div);
+  });
+</script>
+
+</body>
+</html>
