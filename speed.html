@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speed Converter</title>
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .converter{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input, select{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  input{
+    width:100%;
+  }
+
+  .result{
+    margin-top:10px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+
+  button{
+    padding:10px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+
+  button:hover{
+    background:#222;
+  }
+</style>
+</head>
+<body>
+
+<h1>Speed Converter</h1>
+
+<div class="converter">
+  <input type="number" id="inputValue" placeholder="Enter speed" />
+
+  <select id="fromUnit">
+    <option value="c">Lightspeed (C)</option>
+    <option value="mach">Mach (Ma)</option>
+    <option value="mps">Metre per second (m/s)</option>
+    <option value="kmh">Kilometre per hour (km/h)</option>
+    <option value="kms">Kilometre per second (km/s)</option>
+    <option value="knot">Knot (kn)</option>
+    <option value="mph">Mile per hour (mph)</option>
+    <option value="ips">Inch per second (ips)</option>
+    <option value="fps">Foot per second (fps)</option>
+  </select>
+
+  <select id="toUnit">
+    <option value="c">Lightspeed (C)</option>
+    <option value="mach">Mach (Ma)</option>
+    <option value="mps">Metre per second (m/s)</option>
+    <option value="kmh">Kilometre per hour (km/h)</option>
+    <option value="kms">Kilometre per second (km/s)</option>
+    <option value="knot">Knot (kn)</option>
+    <option value="mph">Mile per hour (mph)</option>
+    <option value="ips">Inch per second (ips)</option>
+    <option value="fps">Foot per second (fps)</option>
+  </select>
+
+  <button onclick="convertSpeed()">Convert</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function convertSpeed(){
+  const value = parseFloat(document.getElementById('inputValue').value);
+  const from = document.getElementById('fromUnit').value;
+  const to = document.getElementById('toUnit').value;
+
+  if(isNaN(value)){
+    document.getElementById('result').textContent = "Enter a valid number!";
+    return;
+  }
+
+  // Base unit: m/s
+  const units = {
+    c: 299792458,
+    mach: 340.29,
+    mps: 1,
+    kmh: 1000/3600,
+    kms: 1000,
+    knot: 0.514444,
+    mph: 0.44704,
+    ips: 0.0254,
+    fps: 0.3048
+  };
+
+  const inMps = value * units[from];
+  const result = inMps / units[to];
+
+  document.getElementById('result').textContent = `Result: ${result} ${to}`;
+}
+</script>
+
+</body>
+</html>
