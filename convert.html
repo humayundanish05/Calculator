@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Converter Menu</title>
 
+<!-- Google Material Icons CDN -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <style>
   body{
     margin:0;
@@ -21,11 +24,15 @@
     font-weight:600;
   }
 
-  header .tab{
+  header a{
     margin-right:24px;
     opacity:0.45;
+    text-decoration:none;
+    color:inherit;
+    display:inline-block;
   }
-  header .active{
+
+  header a.active{
     opacity:1;
   }
 
@@ -45,8 +52,7 @@
   }
 
   .icon{
-    width:40px;
-    height:40px;
+    font-size:40px;
     margin-bottom:10px;
     opacity:0.9;
   }
@@ -56,83 +62,79 @@
 <body>
 
 <header>
-  <a href="index.html" class="subtitle" style="text-decoration:none;color:inherit;display:inline-block;">
-  calculator
-      </a>
-      <a href="convert.html" class="subtitle" style="text-decoration:none;color:inherit;display:inline-block;">
-  converter
-      </a>
+  <a href="index.html">Calculator</a>
+  <a href="convert.html" class="active">Converter</a>
 </header>
 
 <div class="grid">
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="10"/></svg>
+    <span class="material-icons icon">attach_money</span>
     <div>Currency</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><rect x="4" y="9" width="16" height="6"/></svg>
+    <span class="material-icons icon">straighten</span>
     <div>Length</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><path d="M7 3h10v18H7z"/></svg>
+    <span class="material-icons icon">fitness_center</span>
     <div>Mass</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><rect x="5" y="5" width="14" height="14"/></svg>
+    <span class="material-icons icon">crop_square</span>
     <div>Area</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="4"/></svg>
+    <span class="material-icons icon">access_time</span>
     <div>Time</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><path d="M12 2l8 20H4z"/></svg>
+    <span class="material-icons icon">account_balance</span>
     <div>Finance</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><rect x="5" y="8" width="14" height="10"/></svg>
+    <span class="material-icons icon">data_usage</span>
     <div>Data</div>
   </div>
 
-  <div class .="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><rect x="7" y="4" width="10" height="16"/></svg>
+  <div class="item">
+    <span class="material-icons icon">date_range</span>
     <div>Date</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><path d="M4 4l16 16"/></svg>
+    <span class="material-icons icon">local_offer</span>
     <div>Discount</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><polygon points="6,4 18,4 18,20 6,20"/></svg>
+    <span class="material-icons icon">volume_up</span>
     <div>Volume</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><path d="M12 2v20m-6-6h12"/></svg>
-    <div>Numeral system</div>
+    <span class="material-icons icon">calculate</span>
+    <div>Numeral System</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="6"/></svg>
+    <span class="material-icons icon">speed</span>
     <div>Speed</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><rect x="10" y="3" width="4" height="18"/></svg>
+    <span class="material-icons icon">thermostat</span>
     <div>Temperature</div>
   </div>
 
   <div class="item">
-    <svg class="icon" viewBox="0 0 24 24" fill="white"><rect x="8" y="6" width="8" height="12"/></svg>
+    <span class="material-icons icon">monitor_weight</span>
     <div>BMI</div>
   </div>
 
