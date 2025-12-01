@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Temperature Converter</title>
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .converter{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input, select{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  input{
+    width:100%;
+  }
+
+  .result{
+    margin-top:10px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+
+  button{
+    padding:10px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+
+  button:hover{
+    background:#222;
+  }
+</style>
+</head>
+<body>
+
+<h1>Temperature Converter</h1>
+
+<div class="converter">
+  <input type="number" id="inputValue" placeholder="Enter temperature" />
+
+  <select id="fromUnit">
+    <option value="C">Celsius (°C)</option>
+    <option value="F">Fahrenheit (°F)</option>
+    <option value="K">Kelvin (K)</option>
+    <option value="R">Rankine (°R)</option>
+    <option value="Re">Réaumur (°Re)</option>
+  </select>
+
+  <select id="toUnit">
+    <option value="C">Celsius (°C)</option>
+    <option value="F">Fahrenheit (°F)</option>
+    <option value="K">Kelvin (K)</option>
+    <option value="R">Rankine (°R)</option>
+    <option value="Re">Réaumur (°Re)</option>
+  </select>
+
+  <button onclick="convertTemperature()">Convert</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function convertTemperature(){
+  const value = parseFloat(document.getElementById('inputValue').value);
+  const from = document.getElementById('fromUnit').value;
+  const to = document.getElementById('toUnit').value;
+
+  if(isNaN(value)){
+    document.getElementById('result').textContent = "Enter a valid number!";
+    return;
+  }
+
+  let celsius;
+
+  // Convert from input unit to Celsius
+  switch(from){
+    case 'C': celsius = value; break;
+    case 'F': celsius = (value - 32) * 5/9; break;
+    case 'K': celsius = value - 273.15; break;
+    case 'R': celsius = (value - 491.67) * 5/9; break;
+    case 'Re': celsius = value * 5/4; break;
+  }
+
+  let result;
+  // Convert Celsius to target unit
+  switch(to){
+    case 'C': result = celsius; break;
+    case 'F': result = celsius * 9/5 + 32; break;
+    case 'K': result = celsius + 273.15; break;
+    case 'R': result = (celsius + 273.15) * 9/5; break;
+    case 'Re': result = celsius * 4/5; break;
+  }
+
+  document.getElementById('result').textContent = `Result: ${result.toFixed(2)} ${to}`;
+}
+</script>
+
+</body>
+</html>
