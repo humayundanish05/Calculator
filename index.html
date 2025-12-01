@@ -1,41 +1,138 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dark Rounded Calculator</title>
-  <style>
-    :root{--bg:#000;--panel:#0f0f10;--button:#252525;--accent:#ff8a00;--muted:#6b6b6b}
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-    body{background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:18px 12px;color:#fff}
-    .calculator{width:380px;max-width:95vw;border-radius:18px;padding:18px;background:linear-gradient(180deg,var(--panel),#070707);box-shadow:0 8px 30px rgba(0,0,0,0.7);overflow:hidden}
-    .topbar{display:flex;justify-content:space-between;align-items:center;color:#fff7;padding:6px 2px 12px 2px;font-weight:600}
-    .topbar .title{font-size:20px}
-    .topbar .subtitle{font-size:18px;color:#777}
-    .display{padding:8px 12px 18px;min-height:120px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end}
-    .history{color:#999;font-size:15px;margin-bottom:8px;opacity:0.7}
-    .output{font-size:64px;font-weight:600;color:#fff;line-height:1}
-    .pad{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:8px 0 12px}
-    .btn{background:var(--button);border-radius:18px;padding:18px 10px;border:0;font-size:22px;color:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,0.25);cursor:pointer;user-select:none}
-    .btn:active{transform:translateY(1px)}
-    .func{background:#2f2f2f;color:var(--accent);font-weight:600}
-    .op{background:#2f2f2f;color:var(--accent);font-weight:600}
-    .eq{background:var(--accent);color:#fff;border-radius:16px;font-weight:700}
-    .special{background:#2f2f2f}
-    .num{background:#2a2a2a}
-    @media (max-width:420px){.output{font-size:48px}.btn{padding:14px 8px;font-size:20px}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dark Neon Calculator</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+    --panel: rgba(0,0,0,0.6);
+    --button: #1a1a1a;
+    --accent: #00ffe1;
+    --hover: #ff00d4;
+    --muted: #6b6b6b;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;}
+  body{
+    background: var(--bg);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:18px 12px;
+    color:#fff;
+  }
+
+  .calculator{
+    width:380px;
+    max-width:95vw;
+    border-radius:18px;
+    padding:18px;
+    background: var(--panel);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 2px 12px 2px;
+    font-weight:600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .topbar a{
+    text-decoration:none;
+    color: #ccc;
+    font-weight:500;
+    position: relative;
+    transition: 0.3s;
+  }
+
+  .topbar a.active, .topbar a:hover{
+    color: #fff;
+  }
+
+  .topbar a.active::after, .topbar a:hover::after{
+    content:'';
+    position:absolute;
+    bottom:-4px;
+    left:0;
+    width:100%;
+    height:3px;
+    background: linear-gradient(90deg,var(--accent),var(--hover));
+    border-radius:2px;
+  }
+
+  .display{
+    padding:8px 12px 18px;
+    min-height:120px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:flex-end;
+  }
+
+  .history{color:var(--muted);font-size:15px;margin-bottom:8px;opacity:0.7}
+  .output{font-size:64px;font-weight:600;color:#fff;line-height:1}
+
+  .pad{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    padding:8px 0 12px;
+  }
+
+  .btn{
+    background: var(--button);
+    border-radius:18px;
+    padding:18px 10px;
+    border:0;
+    font-size:22px;
+    color:#fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    cursor:pointer;
+    user-select:none;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover{
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+    background: rgba(0,255,225,0.1);
+    color: var(--hover);
+  }
+
+  .btn.func{background:#222;color:var(--accent);font-weight:600;}
+  .btn.op{background:#222;color:var(--accent);font-weight:600;}
+  .btn.eq{background: var(--accent); color:#000; font-weight:700;}
+  .btn.special{background:#222;}
+  .btn.num{background:#1a1a1a;}
+
+  @media (max-width:420px){
+    .output{font-size:48px;}
+    .btn{padding:14px 8px;font-size:20px;}
+  }
+</style>
 </head>
 <body>
   <main class="calculator" role="application" aria-label="Calculator">
     <header class="topbar">
-      <a href="index.html" class="subtitle" style="text-decoration:none;color:inherit;display:inline-block;">
-  calculator
-      </a>
-      <a href="convert.html" class="subtitle" style="text-decoration:none;color:inherit;display:inline-block;">
-  converter
-</a>
+      <a href="index.html">calculator</a>
+      <a href="convert.html" class="active">converter</a>
     </header>
 
     <section class="display">
@@ -81,34 +178,32 @@
       function inputNumber(n){
         if(resetNext){ current = '0'; resetNext = false }
         if(n === '.' && current.includes('.')) return;
-        if(current === '0' && n !== '.') current = n; else current = current + n;
+        if(current === '0' && n !== '.') current = n; else current += n;
       }
       function applyOp(newOp){ if(op && !resetNext) compute(); prev = parseFloat(current); op = newOp; resetNext = true }
-      function compute(){ if(!op || prev === null) return; const a = prev; const b = parseFloat(current); let res = 0; switch(op){ case '+': res = a + b; break; case '-': res = a - b; break; case '*': res = a * b; break; case '/': res = b === 0 ? 'Error' : a / b; break } current = String(res); historyEl.textContent = `${a}${op}${b} = ${current}`; op = null; prev = null; resetNext = true }
-      function percent(){ current = String(parseFloat(current) / 100) }
-      function negate(){ current = String(parseFloat(current) * -1) }
-      function clearAll(){ current = '0'; prev = null; op = null; historyEl.textContent = '' }
+      function compute(){ if(!op || prev === null) return; const a=prev,b=parseFloat(current); let res=0; switch(op){ case '+': res=a+b; break; case '-': res=a-b; break; case '*': res=a*b; break; case '/': res=b===0?'Error':a/b; break } current=String(res); historyEl.textContent=`${a}${op}${b} = ${current}`; op=null; prev=null; resetNext=true }
+      function percent(){ current = String(parseFloat(current)/100) }
+      function negate(){ current = String(parseFloat(current)*-1) }
+      function clearAll(){ current='0'; prev=null; op=null; historyEl.textContent='' }
 
-      document.querySelectorAll('.btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const num = btn.dataset.num;
-          const action = btn.dataset.action;
+      document.querySelectorAll('.btn').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const num=btn.dataset.num;
+          const action=btn.dataset.action;
 
-          if(num !== undefined){ inputNumber(num); refresh(); return }
+          if(num!==undefined){ inputNumber(num); refresh(); return }
 
           if(action){
-            if(action === 'clear') clearAll();
-            else if(action === 'back'){ current = current.slice(0,-1) || '0' }
-            else if(action === 'percent') percent();
-            else if(action === 'neg') negate();
-            else if(action === 'dot') inputNumber('.');
-            else if(action === '=') compute();
-
+            if(action==='clear') clearAll();
+            else if(action==='back'){ current=current.slice(0,-1)||'0' }
+            else if(action==='percent') percent();
+            else if(action==='neg') negate();
+            else if(action==='dot') inputNumber('.');
+            else if(action==='=') compute();
             else if(['add','sub','mul','div'].includes(action)){
-              const map = { add: '+', sub: '-', mul: '*', div: '/' };
+              const map={ add: '+', sub: '-', mul: '*', div: '/' };
               applyOp(map[action]);
             }
-
             refresh();
           }
         })
