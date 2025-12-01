@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Time Converter</title>
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .converter{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input, select{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  input{
+    width:100%;
+  }
+
+  .result{
+    margin-top:10px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+
+  button{
+    padding:10px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+
+  button:hover{
+    background:#222;
+  }
+</style>
+</head>
+<body>
+
+<h1>Time Converter</h1>
+
+<div class="converter">
+  <input type="number" id="inputValue" placeholder="Enter value" />
+
+  <select id="fromUnit">
+    <option value="week">Week</option>
+    <option value="day">Day</option>
+    <option value="hour">Hour</option>
+    <option value="minute">Minute</option>
+    <option value="second">Second</option>
+    <option value="millisecond">Millisecond</option>
+    <option value="microsecond">Microsecond</option>
+    <option value="nanosecond">Nanosecond</option>
+    <option value="picosecond">Picosecond</option>
+  </select>
+
+  <select id="toUnit">
+    <option value="week">Week</option>
+    <option value="day">Day</option>
+    <option value="hour">Hour</option>
+    <option value="minute">Minute</option>
+    <option value="second">Second</option>
+    <option value="millisecond">Millisecond</option>
+    <option value="microsecond">Microsecond</option>
+    <option value="nanosecond">Nanosecond</option>
+    <option value="picosecond">Picosecond</option>
+  </select>
+
+  <button onclick="convertTime()">Convert</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function convertTime(){
+  const value = parseFloat(document.getElementById('inputValue').value);
+  const from = document.getElementById('fromUnit').value;
+  const to = document.getElementById('toUnit').value;
+
+  if(isNaN(value)){
+    document.getElementById('result').textContent = "Enter a valid number!";
+    return;
+  }
+
+  // Base unit: second
+  const unitsInSeconds = {
+    week: 604800,
+    day: 86400,
+    hour: 3600,
+    minute: 60,
+    second: 1,
+    millisecond: 0.001,
+    microsecond: 0.000001,
+    nanosecond: 0.000000001,
+    picosecond: 0.000000000001
+  };
+
+  const inSeconds = value * unitsInSeconds[from];
+  const result = inSeconds / unitsInSeconds[to];
+
+  document.getElementById('result').textContent = `Result: ${result} ${to}`;
+}
+</script>
+
+</body>
+</html>
