@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tax Calculator</title>
+<style>
+ body{background:#000;color:#fff;font-family:Inter;padding:24px}
+ .card{max-width:600px;margin:auto;background:#0f0f0f;padding:18px;border-radius:12px}
+ input{width:100%;padding:10px;background:#191919;color:#fff;border:none;border-radius:8px;margin-bottom:10px}
+ button{padding:10px;background:#0b7;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="card">
+ <h2>Tax Withholding</h2>
+
+ <input id="income" type="number" placeholder="Yearly Income">
+ <input id="rate" type="number" placeholder="Tax Rate %">
+
+ <button onclick="calc()">Calculate</button>
+ <a href="finance.html" style="color:#9f9;margin-left:12px">← Back</a>
+
+ <div id="out" style="margin-top:12px;color:#9f9"></div>
+</div>
+
+<script>
+function calc(){
+  const inc = +document.getElementById("income").value;
+  const rate = +document.getElementById("rate").value/100;
+  const tax = inc*rate;
+  const net = inc - tax;
+
+  document.getElementById("out").innerHTML =
+    `Tax: <strong>${tax.toFixed(2)}</strong><br>Net Income: <strong>${net.toFixed(2)}</strong>`;
+}
+</script>
+
+</body>
+</html>
