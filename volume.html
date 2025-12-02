@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Volume Converter</title>
+
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .converter{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input, select{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  .result{
+    margin-top:10px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+
+  button{
+    padding:10px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+
+  button:hover{
+    background:#222;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Volume Converter</h1>
+
+<div class="converter">
+  <input type="number" id="inputValue" placeholder="Enter volume" />
+
+  <select id="fromUnit">
+    <option value="m3">Cubic meter (m³)</option>
+    <option value="cm3">Cubic centimeter (cm³)</option>
+    <option value="mm3">Cubic millimeter (mm³)</option>
+    <option value="l">Liter (L)</option>
+    <option value="ml">Milliliter (mL)</option>
+    <option value="gal">Gallon (gal)</option>
+    <option value="qt">Quart (qt)</option>
+    <option value="pt">Pint (pt)</option>
+    <option value="cup">Cup (cup)</option>
+    <option value="tbsp">Tablespoon (tbsp)</option>
+    <option value="tsp">Teaspoon (tsp)</option>
+  </select>
+
+  <select id="toUnit">
+    <option value="m3">Cubic meter (m³)</option>
+    <option value="cm3">Cubic centimeter (cm³)</option>
+    <option value="mm3">Cubic millimeter (mm³)</option>
+    <option value="l">Liter (L)</option>
+    <option value="ml">Milliliter (mL)</option>
+    <option value="gal">Gallon (gal)</option>
+    <option value="qt">Quart (qt)</option>
+    <option value="pt">Pint (pt)</option>
+    <option value="cup">Cup (cup)</option>
+    <option value="tbsp">Tablespoon (tbsp)</option>
+    <option value="tsp">Teaspoon (tsp)</option>
+  </select>
+
+  <button onclick="convertVolume()">Convert</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function convertVolume(){
+  const v = parseFloat(document.getElementById('inputValue').value);
+  const f = document.getElementById('fromUnit').value;
+  const t = document.getElementById('toUnit').value;
+
+  if(isNaN(v)){
+    document.getElementById('result').textContent = "Enter a valid number!";
+    return;
+  }
+
+  // Base unit: cubic meter (m³)
+  const unit = {
+    m3: 1,
+    cm3: 1e-6,
+    mm3: 1e-9,
+    l: 0.001,
+    ml: 0.000001,
+    gal: 0.00378541,
+    qt: 0.000946353,
+    pt: 0.000473176,
+    cup: 0.000236588,
+    tbsp: 0.0000147868,
+    tsp: 0.00000492892
+  };
+
+  const inM3 = v * unit[f];
+  const result = inM3 / unit[t];
+
+  document.getElementById('result').textContent = `Result: ${result}`;
+}
+</script>
+
+</body>
+</html>
