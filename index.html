@@ -1,339 +1,295 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Scientific Calculator</title>
-  <style> 
-  :root{
-  --bg:#0f1720;
-  --panel:#0b1220;
-  --accent:#8be9fd;
-  --muted:#98a0aa;
-  --btn:#101820;
-  --glass: rgba(255,255,255,0.03);
-  --shadow: 0 6px 18px rgba(2,6,23,0.7);
-  --radius:14px;
-  --fast: 200ms;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Premium Scientific Calculator</title>
+<style>
+/* calculator.css */
+:root {
+  --bg: #0f1720;
+  --panel: #1a1f2a;
+  --btn-bg: #272d3a;
+  --btn-hover: #3a3f53;
+  --accent: #8be9fd;
+  --text: #e0e0e0;
+  --display-bg: #0b1220;
+  --transition-speed: 0.3s;
 }
 
-*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-html,body{height:100%;margin:0;background:linear-gradient(180deg,#051018 0%, #071226 100%);display:flex;align-items:center;justify-content:center;padding:24px;}
-
-.calc-wrap{
-  width:380px;
-  max-width:95vw;
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-  padding:18px;
-  position:relative;
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* display */
-.display{
-  height:84px;
-  color:var(--accent);
-  font-size:28px;
-  text-align:right;
-  padding:16px;
-  border-radius:10px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-  margin-bottom:14px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  word-break:break-all;
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 20px;
 }
 
-/* keypad */
-.keypad{display:grid;grid-template-columns:1fr;gap:10px;}
-.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:stretch}
+/* Navigation */
+.nav-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
 
-/* buttons */
-.btn{
-  background:linear-gradient(180deg, var(--btn), rgba(255,255,255,0.02));
+.nav-row a {
+  text-decoration: none;
+  padding: 8px 18px;
+  background: var(--btn-bg);
+  border-radius: 8px;
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+}
+
+.nav-row a.active, .nav-row a:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Calculator Container */
+.calculator-container {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 350px;
+  max-width: 95%;
+}
+
+/* Display */
+.display input {
+  width: 100%;
+  font-size: 2rem;
+  padding: 15px;
+  background: var(--display-bg);
   border: none;
-  color:#e6eef2;
-  font-size:18px;
-  padding:14px;
-  border-radius:10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.45);
-  cursor:pointer;
-  transition: transform var(--fast), background var(--fast), opacity var(--fast), box-shadow var(--fast);
-  user-select:none;
-}
-.btn:active{transform:translateY(2px) scale(0.995);}
-
-.btn.op{background:linear-gradient(180deg,#1f2a34, #112022); color:var(--accent); font-weight:600;}
-.btn.eq{background:linear-gradient(180deg,#0b8bd6,#0576b5); font-weight:700; color:white;}
-.btn.func{background:linear-gradient(180deg,#2a2f36,#10141a); color:var(--muted); font-weight:600;}
-
-.btn.small{font-size:14px;padding:10px}
-
-/* scientific hidden by default */
-.scientific{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;opacity:0;transform:translateY(8px);pointer-events:none;height:0;overflow:hidden;transition:all 260ms cubic-bezier(.2,.9,.3,1);}
-
-/* when shown */
-.calc-wrap.scientific-mode .scientific{
-  opacity:1;
-  transform:translateY(0);
-  height:auto;
-  pointer-events:auto;
+  border-radius: 12px;
+  color: var(--text);
+  text-align: right;
+  margin-bottom: 20px;
 }
 
-/* compact mode - shrink simple buttons */
-.calc-wrap.compact .keys.simple .btn{
-  padding:8px;
-  font-size:14px;
-  border-radius:8px;
-  transition:all 260ms;
+/* Buttons Container */
+.buttons-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
 }
 
-/* small animation for appearing items */
-@keyframes appearUp {
-  from{opacity:0; transform:translateY(10px) scale(0.96);}
-  to{opacity:1; transform:translateY(0) scale(1);}
-}
-.calc-wrap.scientific-mode .scientific .btn{
-  animation: appearUp 320ms ease both;
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  transition: all var(--transition-speed) ease;
 }
 
-/* toggle button bottom-left */
-.toggle{
-  position:fixed;
-  left:18px;
-  bottom:18px;
-  width:56px;
-  height:56px;
-  border-radius:12px;
-  background:linear-gradient(180deg,#0b8bd6,#0576b5);
-  border:none;
-  color:white;
-  font-size:22px;
-  box-shadow:0 8px 24px rgba(3,10,20,0.6);
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:transform 160ms;
-  z-index:40;
+/* Hidden scientific mode animation */
+.hidden {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: all var(--transition-speed) ease;
 }
-.toggle:active{transform:translateY(2px) scale(.99);}
 
-/* responsive tweaks */
-@media (max-width:420px){
-  .calc-wrap{padding:12px;}
-  .display{height:72px;font-size:22px}
-  .btn{padding:12px;font-size:16px}
-  .toggle{left:12px;bottom:12px;width:48px;height:48px}
+.buttons.scientific-mode {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Buttons */
+.btn {
+  padding: 18px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--btn-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--btn-hover);
+  color: var(--accent);
+}
+
+/* Mode Toggle Button */
+#mode-toggle {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000;
+  transition: transform 0.2s ease;
+}
+
+#mode-toggle:hover {
+  transform: scale(1.05);
 }
   
-  </style>
+</style>
 </head>
 <body>
-  <div class="calc-wrap" id="calc">
-    <div class="display" id="display">0</div>
 
-    <!-- keypad -->
-    <div class="keypad" id="keypad">
-      <!-- simple arithmetic rowset -->
-      <div class="keys simple">
-        <button class="btn func" data-action="clear">AC</button>
-        <button class="btn func" data-action="back">⌫</button>
-        <button class="btn func" data-action="percent">%</button>
-        <button class="btn op" data-value="/">÷</button>
+<!-- Navigation Row -->
+<div class="nav-row">
+  <a href="calculator.html" class="active">Calculator</a>
+  <a href="history.html">History</a>
+  <a href="convert.html">Converter</a>
+</div>
 
-        <button class="btn" data-value="7">7</button>
-        <button class="btn" data-value="8">8</button>
-        <button class="btn" data-value="9">9</button>
-        <button class="btn op" data-value="*">×</button>
+<!-- Calculator Container -->
+<div class="calculator-container">
 
-        <button class="btn" data-value="4">4</button>
-        <button class="btn" data-value="5">5</button>
-        <button class="btn" data-value="6">6</button>
-        <button class="btn op" data-value="-">−</button>
-
-        <button class="btn" data-value="1">1</button>
-        <button class="btn" data-value="2">2</button>
-        <button class="btn" data-value="3">3</button>
-        <button class="btn op" data-value="+">+</button>
-
-        <button class="btn" data-value="0" style="grid-column: span 2;">0</button>
-        <button class="btn" data-value=".">.</button>
-        <button class="btn eq" data-action="equals">=</button>
-      </div>
-
-      <!-- scientific keys (initially hidden) -->
-      <div class="keys scientific" id="sciKeys" aria-hidden="true">
-        <button class="btn small" data-value="(">(</button>
-        <button class="btn small" data-value=")">)</button>
-        <button class="btn small" data-action="pow">^</button>
-        <button class="btn small" data-action="sqrt">√</button>
-
-        <button class="btn small" data-action="sin">sin</button>
-        <button class="btn small" data-action="cos">cos</button>
-        <button class="btn small" data-action="tan">tan</button>
-        <button class="btn small" data-action="pi">π</button>
-
-        <button class="btn small" data-action="ln">ln</button>
-        <button class="btn small" data-action="log">log</button>
-        <button class="btn small" data-action="e">e</button>
-        <button class="btn small" data-action="exp">exp</button>
-
-        <button class="btn small" data-action="fact">n!</button>
-        <button class="btn small" data-action="abs">abs</button>
-        <button class="btn small" data-action="deg">deg</button>
-        <button class="btn small" data-action="rad">rad</button>
-      </div>
-    </div>
+  <!-- Display -->
+  <div class="display">
+    <input type="text" id="calc-display" placeholder="0" disabled>
   </div>
 
-  <!-- bottom-left toggle -->
-  <button id="toggleSci" class="toggle" aria-pressed="false" title="Toggle Scientific">⇄</button>
+  <!-- Buttons Container -->
+  <div class="buttons-container">
 
-  <script>
+    <!-- Simple Mode Buttons -->
+    <div class="buttons simple-mode">
+      <button class="btn num">7</button>
+      <button class="btn num">8</button>
+      <button class="btn num">9</button>
+      <button class="btn operator">/</button>
+      <button class="btn num">4</button>
+      <button class="btn num">5</button>
+      <button class="btn num">6</button>
+      <button class="btn operator">*</button>
+      <button class="btn num">1</button>
+      <button class="btn num">2</button>
+      <button class="btn num">3</button>
+      <button class="btn operator">-</button>
+      <button class="btn num">0</button>
+      <button class="btn dot">.</button>
+      <button class="btn equals">=</button>
+      <button class="btn operator">+</button>
+    </div>
 
-/* Super Premium Scientific Calculator
-   - left-bottom toggle shows/hides scientific keys and shrinks arithmetic keys (compact)
-   - animated appearance/disappearance
-   - basic evaluation using Math.* mappings (radians by default)
-*/
-const calc = document.getElementById('calc');
-const display = document.getElementById('display');
-const toggle = document.getElementById('toggleSci');
-const sciKeys = document.getElementById('sciKeys');
+    <!-- Scientific Mode Buttons -->
+    <div class="buttons scientific-mode hidden">
+      <button class="btn func">sin</button>
+      <button class="btn func">cos</button>
+      <button class="btn func">tan</button>
+      <button class="btn func">log</button>
+      <button class="btn func">ln</button>
+      <button class="btn func">√</button>
+      <button class="btn func">^</button>
+      <button class="btn func">π</button>
+      <button class="btn func">e</button>
+      <button class="btn func">(</button>
+      <button class="btn func">)</button>
+      <button class="btn func">exp</button>
+      <button class="btn func">abs</button>
+    </div>
 
-let expr = '';
-let degMode = false;
+  </div>
 
-function updateDisplay(v) {
-  display.textContent = v === '' ? '0' : v;
-}
+  <!-- Mode Toggle Button -->
+  <button id="mode-toggle">Toggle Mode</button>
 
-function append(value) {
-  expr += value;
-  updateDisplay(expr);
-}
+</div>
 
-function safeEval(input) {
-  let s = String(input)
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .replace(/−/g, '-')
-    .replace(/\^/g, '**')
-    .replace(/π/g, 'Math.PI')
-    .replace(/\be\b/g, 'Math.E')
-    .replace(/\bsin\s*\(/g, 'Math.sin(')
-    .replace(/\bcos\s*\(/g, 'Math.cos(')
-    .replace(/\btan\s*\(/g, 'Math.tan(')
-    .replace(/\bln\s*\(/g, 'Math.log(')
-    .replace(/\blog\s*\(/g, 'Math.log10(')
-    .replace(/\babs\s*\(/g, 'Math.abs(')
-    .replace(/\bsqrt\s*\(/g, 'Math.sqrt(')
-    .replace(/\bexp\s*\(/g, 'Math.exp(')
-    .replace(/(\d+|\([^()]*\))\s*!/g, 'factorial($1)');
+<script>
+// calculator.js
 
-  if (degMode) {
-    s = s.replace(/Math\.sin\(/g, 'Math.sin(deg2rad(')
-         .replace(/Math\.cos\(/g, 'Math.cos(deg2rad(')
-         .replace(/Math\.tan\(/g, 'Math.tan(deg2rad('));
-    // manually add closing parens for sin/cos/tan
-    let openCount = (s.match(/deg2rad\(/g) || []).length;
-    s += ')'.repeat(openCount);
+const display = document.getElementById("calc-display");
+const modeToggle = document.getElementById("mode-toggle");
+const simpleButtons = document.querySelector(".simple-mode");
+const scientificButtons = document.querySelector(".scientific-mode");
+
+let isScientific = false;
+let currentInput = "";
+
+// Toggle Mode with animation
+modeToggle.addEventListener("click", () => {
+  isScientific = !isScientific;
+
+  if (isScientific) {
+    scientificButtons.classList.remove("hidden");
+    simpleButtons.classList.add("hidden");
+  } else {
+    scientificButtons.classList.add("hidden");
+    simpleButtons.classList.remove("hidden");
   }
+});
 
-  const helper = {
-    deg2rad: d => (d * Math.PI) / 180,
-    factorial: function factorial(n) {
-      n = Number(n);
-      if (!Number.isFinite(n) || n < 0) return NaN;
-      if (n === 0) return 1;
-      if (n % 1 !== 0) return gamma(n + 1);
-      let r = 1;
-      for (let i = 2; i <= n; i++) r *= i;
-      return r;
-    },
-    gamma: (function() {
-      function gamma(z) {
-        const p = [
-          676.5203681218851, -1259.1392167224028,
-          771.32342877765313, -176.61502916214059,
-          12.507343278686905, -0.13857109526572012,
-          9.9843695780195716e-6, 1.5056327351493116e-7
-        ];
-        if(z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
-        z -= 1;
-        let x = 0.99999999999980993;
-        for (let i = 0; i < p.length; i++) x += p[i] / (z + i + 1);
-        let t = z + p.length - 0.5;
-        return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
-      }
-      return gamma;
-    })()
-  };
+// Handle button clicks
+document.querySelectorAll(".btn").forEach(button => {
+  button.addEventListener("click", () => {
+    const value = button.textContent;
 
+    if (button.classList.contains("num") || button.classList.contains("operator") || button.classList.contains("dot")) {
+      currentInput += value;
+      display.value = currentInput;
+    } 
+    else if (button.classList.contains("func")) {
+      applyFunction(value);
+    } 
+    else if (button.classList.contains("equals")) {
+      calculateResult();
+    }
+  });
+});
+
+// Apply scientific functions
+function applyFunction(func) {
   try {
-    const fn = new Function(...Object.keys(helper), 'return ' + s + ';');
-    const res = fn(...Object.values(helper));
-    return Number.isFinite(res) ? String(res) : 'Error';
-  } catch {
-    return 'Error';
+    let x = eval(currentInput || "0");
+    switch(func) {
+      case "sin": currentInput = Math.sin(x).toString(); break;
+      case "cos": currentInput = Math.cos(x).toString(); break;
+      case "tan": currentInput = Math.tan(x).toString(); break;
+      case "log": currentInput = Math.log10(x).toString(); break;
+      case "ln": currentInput = Math.log(x).toString(); break;
+      case "√": currentInput = Math.sqrt(x).toString(); break;
+      case "^": currentInput += "**"; break;
+      case "π": currentInput += Math.PI; break;
+      case "e": currentInput += Math.E; break;
+      case "exp": currentInput += "e+"; break;
+      case "abs": currentInput = Math.abs(x).toString(); break;
+      case "(": currentInput += "("; break;
+      case ")": currentInput += ")"; break;
+    }
+    display.value = currentInput;
+  } catch (err) {
+    display.value = "Error";
   }
 }
 
-document.addEventListener('click', (ev) => {
-  const btn = ev.target.closest('.btn');
-  if (!btn) return;
-  const val = btn.dataset.value;
-  const act = btn.dataset.action;
-
-  if (val) { append(val); return; }
-
-  switch (act) {
-    case 'clear': expr=''; updateDisplay(expr); break;
-    case 'back': expr=expr.slice(0,-1); updateDisplay(expr); break;
-    case 'percent': if(expr){ expr='('+expr+')/100'; updateDisplay(expr); } break;
-    case 'equals': if(expr){ let out=safeEval(expr); display.textContent=out; expr=out==='Error'?'':out; } break;
-    case 'pow': append('^'); break;
-    case 'sqrt': append('Math.sqrt('); break;
-    case 'sin': append('sin('); break;
-    case 'cos': append('cos('); break;
-    case 'tan': append('tan('); break;
-    case 'ln': append('ln('); break;
-    case 'log': append('log('); break;
-    case 'pi': append('π'); break;
-    case 'e': append('e'); break;
-    case 'exp': append('exp('); break;
-    case 'fact': append('!'); break;
-    case 'abs': append('abs('); break;
-    case 'deg': degMode=true; toggle.classList.add('deg-on'); break;
-    case 'rad': degMode=false; toggle.classList.remove('deg-on'); break;
+// Calculate result
+function calculateResult() {
+  try {
+    currentInput = eval(currentInput).toString();
+    display.value = currentInput;
+  } catch (err) {
+    display.value = "Error";
+    currentInput = "";
   }
-});
-
-let sciVisible = false;
-toggle.addEventListener('click', () => {
-  sciVisible = !sciVisible;
-  toggle.setAttribute('aria-pressed', String(sciVisible));
-  calc.classList.toggle('scientific-mode', sciVisible);
-  calc.classList.toggle('compact', sciVisible);
-  sciKeys.setAttribute('aria-hidden', String(!sciVisible));
-  toggle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.92)' }, { transform: 'scale(1)' }], { duration: 220 });
-});
-
-window.addEventListener('keydown', (e) => {
-  const k = e.key;
-  if(/\d/.test(k)) append(k);
-  else if(k==='Enter'||k==='='){ e.preventDefault(); let out=safeEval(expr); display.textContent=out; expr=out==='Error'?'':out; }
-  else if(k==='Backspace'){ expr=expr.slice(0,-1); updateDisplay(expr); }
-  else if(k==='Escape'){ expr=''; updateDisplay(expr); }
-  else if('+-*/().'.includes(k)) append(k);
-});
-
-updateDisplay('');
-
+}
+  
 </script>
 </body>
 </html>
