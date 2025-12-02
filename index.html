@@ -349,15 +349,189 @@ body {
 
 </div>
 
-<script src="main.js"></script>
-<script src="math-engine/parser.js"></script>
-<script src="math-engine/algebra.js"></script>
-<script src="math-engine/calculus.js"></script>
-<script src="math-engine/trig.js"></script>
-<script src="math-engine/complex.js"></script>
-<script src="math-engine/matrices.js"></script>
-<script src="math-engine/statistics.js"></script>
-<script src="math-engine/units.js"></script>
+<script>
+   
+/* main.js
+   Core logic: input system, display updates, live evaluation pipeline,
+   history + memory, error handling, UI events, keyboard support.
+*/
+
+import { parseExpression } from "./math-engine/parser.js";
+import { Algebra } from "./math-engine/algebra.js";
+import { Calculus } from "./math-engine/calculus.js";
+import { Trig } from "./math-engine/trig.js";
+import { ComplexOps } from "./math-engine/complex.js";
+import { MatrixOps } from "./math-engine/matrices.js";
+import { Stats } from "./math-engine/statistics.js";
+import { Units } from "./math-engine/units.js";
+
+const exprDisplay = document.getElementById("expression-display");
+const resultDisplay = document.getElementById("result-display");
+const historyList = document.getElementById("history-list");
+const memoryList = document.getElementById("memory-list");
+
+let memoryValue = 0;
+
+// Inject engine
+const engine = {
+    algebra: Algebra,
+    calculus: Calculus,
+    trig: Trig,
+    complex: ComplexOps,
+    matrix: MatrixOps,
+    stats: Stats,
+    units: Units
+};
+
+/* ------------ INPUT INSERTION ------------ */
+function insertText(txt) {
+    const start = exprDisplay.selectionStart;
+    const end = exprDisplay.selectionEnd;
+    const current = exprDisplay.value;
+
+    exprDisplay.value = current.slice(0, start) + txt + current.slice(end);
+    exprDisplay.selectionStart = exprDisplay.selectionEnd = start + txt.length;
+
+    updateLive();
+}
+
+/* ------------ EVALUATION ------------ */
+function evaluateExpression() {
+    try {
+        const code = exprDisplay.value.trim();
+        if (code === "") return;
+
+        const ast = parseExpression(code);
+        const result = ast.evaluate(engine);
+
+        pushHistory(code, result);
+        renderResult(result);
+
+    } catch (err) {
+        renderError(err.message || "ERROR");
+    }
+}
+
+function updateLive() {
+    try {
+        const code = exprDisplay.value.trim();
+        if (code.length === 0) {
+            resultDisplay.textContent = "";
+            return;
+        }
+        const ast = parseExpression(code);
+        const result = ast.evaluate(engine);
+        renderResult(result);
+    } catch {
+        // silent errors during live update
+        resultDisplay.textContent = "";
+    }
+}
+
+/* ------------ RENDER ------------ */
+function renderResult(value) {
+    resultDisplay.classList.remove("result-error");
+    resultDisplay.textContent = formatOutput(value);
+}
+
+function renderError(msg) {
+    resultDisplay.classList.add("result-error");
+    resultDisplay.textContent = msg;
+}
+
+function formatOutput(val) {
+    if (typeof val === "number") {
+        if (Math.abs(val) >= 1e9 || Math.abs(val) <= 1e-9 && val !== 0)
+            return val.toExponential(12);
+        return val.toPrecision(12);
+    }
+    if (Array.isArray(val)) return JSON.stringify(val);
+    if (val && typeof val === "object" && val.toString) return val.toString();
+    return String(val);
+}
+
+/* ------------ HISTORY ------------ */
+function pushHistory(expr, value) {
+    const item = document.createElement("div");
+    item.className = "history-item";
+
+    const left = document.createElement("div");
+    left.className = "expr";
+    left.textContent = expr;
+
+    const right = document.createElement("div");
+    right.className = "value";
+    right.textContent = formatOutput(value);
+
+    item.appendChild(left);
+    item.appendChild(right);
+
+    item.onclick = () => {
+        exprDisplay.value = expr;
+        updateLive();
+    };
+
+    historyList.prepend(item);
+}
+
+/* ------------ MEMORY ------------ */
+function updateMemoryList() {
+    memoryList.textContent = formatOutput(memoryValue);
+}
+
+function memoryAction(action) {
+    try {
+        const val = parseFloat(resultDisplay.textContent);
+        if (isNaN(val) && action !== "MC" && action !== "MR") return;
+
+        switch (action) {
+            case "MC": memoryValue = 0; break;
+            case "MR": exprDisplay.value += memoryValue; break;
+            case "M+": memoryValue += val; break;
+            case "M-": memoryValue -= val; break;
+        }
+        updateMemoryList();
+    } catch {}
+}
+
+/* ------------ BUTTON HANDLERS ------------ */
+document.querySelectorAll("[data-insert]").forEach(btn => {
+    btn.onclick = () => insertText(btn.dataset.insert);
+});
+
+document.querySelectorAll("[data-fn]").forEach(btn => {
+    btn.onclick = () => {
+        const fn = btn.dataset.fn;
+        if (fn === "clear") {
+            exprDisplay.value = "";
+            resultDisplay.textContent = "";
+        }
+        if (fn === "del") {
+            const v = exprDisplay.value;
+            exprDisplay.value = v.substring(0, v.length - 1);
+            updateLive();
+        }
+        if (fn === "copy") navigator.clipboard.writeText(resultDisplay.textContent);
+        if (fn === "evaluate") evaluateExpression();
+    };
+});
+
+document.querySelectorAll(".mem-btn").forEach(btn => {
+    btn.onclick = () => memoryAction(btn.dataset.action);
+});
+
+/* ------------ KEYBOARD ------------ */
+document.addEventListener("keydown", e => {
+    if (e.key === "Enter") { evaluateExpression(); e.preventDefault(); }
+    if (e.key === "Escape") { exprDisplay.value = ""; resultDisplay.textContent = ""; }
+    if (e.key.length === 1) updateLive();
+});
+
+/* ------------ INIT ------------ */
+updateMemoryList();
+updateLive();
+    
+</script>
 
 </body>
 </html>
