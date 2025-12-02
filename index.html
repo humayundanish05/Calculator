@@ -200,15 +200,13 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,#051018 0%, #07
    - animated appearance/disappearance
    - basic evaluation using Math.* mappings (radians by default)
 */
-
 const calc = document.getElementById('calc');
 const display = document.getElementById('display');
-const keypad = document.getElementById('keypad');
 const toggle = document.getElementById('toggleSci');
 const sciKeys = document.getElementById('sciKeys');
 
 let expr = '';
-let degMode = false; // rad by default
+let degMode = false;
 
 function updateDisplay(v) {
   display.textContent = v === '' ? '0' : v;
@@ -220,51 +218,44 @@ function append(value) {
 }
 
 function safeEval(input) {
-  // sanitize common tokens and map to Math functions
   let s = String(input)
     .replace(/×/g, '*')
     .replace(/÷/g, '/')
     .replace(/−/g, '-')
     .replace(/\^/g, '**')
     .replace(/π/g, 'Math.PI')
-    .replace(/\be\b/g, 'Math.E');
+    .replace(/\be\b/g, 'Math.E')
+    .replace(/\bsin\s*\(/g, 'Math.sin(')
+    .replace(/\bcos\s*\(/g, 'Math.cos(')
+    .replace(/\btan\s*\(/g, 'Math.tan(')
+    .replace(/\bln\s*\(/g, 'Math.log(')
+    .replace(/\blog\s*\(/g, 'Math.log10(')
+    .replace(/\babs\s*\(/g, 'Math.abs(')
+    .replace(/\bsqrt\s*\(/g, 'Math.sqrt(')
+    .replace(/\bexp\s*\(/g, 'Math.exp(')
+    .replace(/(\d+|\([^()]*\))\s*!/g, 'factorial($1)');
 
-  // functions mapping (sin/cos/tan accept radians; degMode will convert)
-  // wrap sin/cos/tan to handle degMode:
-  s = s.replace(/(?<!Math\.)\bsin\s*\(/g, 'Math.sin(');
-  s = s.replace(/(?<!Math\.)\bcos\s*\(/g, 'Math.cos(');
-  s = s.replace(/(?<!Math\.)\btan\s*\(/g, 'Math.tan(');
-  s = s.replace(/\bln\s*\(/g, 'Math.log('); // natural log
-  s = s.replace(/\blog\s*\(/g, 'Math.log10 ? Math.log10(' : 'Math.log(');
-  s = s.replace(/\babs\s*\(/g, 'Math.abs(');
-  s = s.replace(/\bsqrt\s*\(/g, 'Math.sqrt(');
-  s = s.replace(/\bexp\s*\(/g, 'Math.exp(');
-
-  // factorial handle: replace n! with factorial(n)
-  s = s.replace(/(\d+|\([^()]*\))\s*!/g, 'factorial($1)');
-
-  // add degree wrapper if needed:
   if (degMode) {
-    s = s.replace(/Math\.sin\(/g, 'Math.sin(deg2rad(');
-    s = s.replace(/Math\.cos\(/g, 'Math.cos(deg2rad(');
-    s = s.replace(/Math\.tan\(/g, 'Math.tan(deg2rad(');
-    // close added wrapper by inserting ')' before next closing paren; easier to just rely on parentheses matching because we inserted at start of paren
+    s = s.replace(/Math\.sin\(/g, 'Math.sin(deg2rad(')
+         .replace(/Math\.cos\(/g, 'Math.cos(deg2rad(')
+         .replace(/Math\.tan\(/g, 'Math.tan(deg2rad('));
+    // manually add closing parens for sin/cos/tan
+    let openCount = (s.match(/deg2rad\(/g) || []).length;
+    s += ')'.repeat(openCount);
   }
 
-  // helper functions in scope of evaluator
   const helper = {
     deg2rad: d => (d * Math.PI) / 180,
     factorial: function factorial(n) {
       n = Number(n);
       if (!Number.isFinite(n) || n < 0) return NaN;
       if (n === 0) return 1;
-      if (n % 1 !== 0) return gamma(n + 1); // use gamma for non-integers approx
+      if (n % 1 !== 0) return gamma(n + 1);
       let r = 1;
       for (let i = 2; i <= n; i++) r *= i;
       return r;
     },
     gamma: (function() {
-      // Lanczos approx for gamma
       function gamma(z) {
         const p = [
           676.5203681218851, -1259.1392167224028,
@@ -283,58 +274,30 @@ function safeEval(input) {
     })()
   };
 
-  // build and run
   try {
-    // create function with helpers in scope
     const fn = new Function(...Object.keys(helper), 'return ' + s + ';');
     const res = fn(...Object.values(helper));
-    if (Number.isFinite(res)) return String(res);
-    return String(res);
-  } catch (e) {
+    return Number.isFinite(res) ? String(res) : 'Error';
+  } catch {
     return 'Error';
   }
 }
 
-/* event handling */
 document.addEventListener('click', (ev) => {
   const btn = ev.target.closest('.btn');
   if (!btn) return;
   const val = btn.dataset.value;
   const act = btn.dataset.action;
 
-  if (val) {
-    append(val);
-    return;
-  }
+  if (val) { append(val); return; }
 
   switch (act) {
-    case 'clear':
-      expr = '';
-      updateDisplay(expr);
-      break;
-    case 'back':
-      expr = expr.slice(0, -1);
-      updateDisplay(expr);
-      break;
-    case 'percent':
-      // treat percent as division by 100
-      if (expr) {
-        expr = '(' + expr + ')/100';
-        updateDisplay(expr);
-      }
-      break;
-    case 'equals':
-      if (!expr) return;
-      const out = safeEval(expr);
-      display.textContent = out;
-      expr = out === 'Error' ? '' : out;
-      break;
-    case 'pow':
-      append('^');
-      break;
-    case 'sqrt':
-      append('Math.sqrt(');
-      break;
+    case 'clear': expr=''; updateDisplay(expr); break;
+    case 'back': expr=expr.slice(0,-1); updateDisplay(expr); break;
+    case 'percent': if(expr){ expr='('+expr+')/100'; updateDisplay(expr); } break;
+    case 'equals': if(expr){ let out=safeEval(expr); display.textContent=out; expr=out==='Error'?'':out; } break;
+    case 'pow': append('^'); break;
+    case 'sqrt': append('Math.sqrt('); break;
     case 'sin': append('sin('); break;
     case 'cos': append('cos('); break;
     case 'tan': append('tan('); break;
@@ -345,47 +308,30 @@ document.addEventListener('click', (ev) => {
     case 'exp': append('exp('); break;
     case 'fact': append('!'); break;
     case 'abs': append('abs('); break;
-    case 'deg':
-      degMode = true; toggle.classList.add('deg-on');
-      break;
-    case 'rad':
-      degMode = false; toggle.classList.remove('deg-on');
-      break;
+    case 'deg': degMode=true; toggle.classList.add('deg-on'); break;
+    case 'rad': degMode=false; toggle.classList.remove('deg-on'); break;
   }
 });
 
-/* toggle behavior (bottom-left) */
 let sciVisible = false;
 toggle.addEventListener('click', () => {
   sciVisible = !sciVisible;
   toggle.setAttribute('aria-pressed', String(sciVisible));
-  // when showing scientific: shrink arithmetic buttons (compact) and reveal scientific keys
   calc.classList.toggle('scientific-mode', sciVisible);
   calc.classList.toggle('compact', sciVisible);
-  // accessibility flag on scientific keys
   sciKeys.setAttribute('aria-hidden', String(!sciVisible));
-  // animated tactile feedback
   toggle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.92)' }, { transform: 'scale(1)' }], { duration: 220 });
 });
 
-/* keyboard support */
 window.addEventListener('keydown', (e) => {
   const k = e.key;
-  if ((/\d/).test(k)) append(k);
-  else if (k === 'Enter' || k === '=') {
-    e.preventDefault();
-    const out = safeEval(expr);
-    display.textContent = out;
-    expr = out === 'Error' ? '' : out;
-  } else if (k === 'Backspace') {
-    expr = expr.slice(0, -1);
-    updateDisplay(expr);
-  } else if (k === 'Escape') {
-    expr = ''; updateDisplay(expr);
-  } else if ('+-*/().'.includes(k)) append(k);
+  if(/\d/.test(k)) append(k);
+  else if(k==='Enter'||k==='='){ e.preventDefault(); let out=safeEval(expr); display.textContent=out; expr=out==='Error'?'':out; }
+  else if(k==='Backspace'){ expr=expr.slice(0,-1); updateDisplay(expr); }
+  else if(k==='Escape'){ expr=''; updateDisplay(expr); }
+  else if('+-*/().'.includes(k)) append(k);
 });
 
-/* initial */
 updateDisplay('');
 
 </script>
