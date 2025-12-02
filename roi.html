@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROI Calculator</title>
+<style>
+ body{margin:0;background:#000;color:#fff;padding:22px;font-family:Inter}
+ .box{max-width:600px;margin:auto;background:#0f0f0f;padding:18px;border-radius:12px}
+ input{width:100%;padding:10px;border:none;border-radius:8px;background:#191919;color:#fff;margin-bottom:10px}
+ button{padding:10px;background:#0b7;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>ROI</h2>
+  <input id="cost" type="number" placeholder="Initial Cost">
+  <input id="gain" type="number" placeholder="Final Value">
+  <button onclick="calc()">Calculate</button>
+  <a href="finance.html" style="color:#9f9;margin-left:12px">← Back</a>
+  <div id="out" style="margin-top:12px;color:#9f9"></div>
+</div>
+
+<script>
+function calc(){
+  const c = +document.getElementById("cost").value;
+  const g = +document.getElementById("gain").value;
+  const roi = ((g - c)/c)*100;
+  document.getElementById("out").innerText = "ROI: " + roi.toFixed(2) + "%";
+}
+</script>
+
+</body>
+</html>
