@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Date Converter</title>
+
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .converter{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input, select{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  button{
+    padding:10px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+
+  button:hover{
+    background:#222;
+  }
+
+  .result{
+    margin-top:10px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Date Converter</h1>
+
+<div class="converter">
+  <input type="number" id="inputValue" placeholder="Enter value">
+
+  <select id="fromUnit">
+    <option value="day">Day</option>
+    <option value="week">Week</option>
+    <option value="month">Month (30 days)</option>
+    <option value="year">Year (365 days)</option>
+  </select>
+
+  <select id="toUnit">
+    <option value="day">Day</option>
+    <option value="week">Week</option>
+    <option value="month">Month (30 days)</option>
+    <option value="year">Year (365 days)</option>
+  </select>
+
+  <button onclick="convertDate()">Convert</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function convertDate(){
+  const v = parseFloat(document.getElementById('inputValue').value);
+  const f = document.getElementById('fromUnit').value;
+  const t = document.getElementById('toUnit').value;
+
+  if(isNaN(v)){
+    document.getElementById('result').textContent = "Enter a valid number!";
+    return;
+  }
+
+  // Base: days
+  const u = {
+    day: 1,
+    week: 7,
+    month: 30,
+    year: 365
+  };
+
+  const inDays = v * u[f];
+  const result = inDays / u[t];
+
+  document.getElementById('result').textContent = `Result: ${result}`;
+}
+</script>
+
+</body>
+</html>
