@@ -7,117 +7,133 @@
 <title>Converter Hub | Premium</title>  <!-- Google Material Icons -->  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"> 
 <style>
-  /* Reset & base */
-  * {margin:0;padding:0;box-sizing:border-box;}
-  body {
-    background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
-    font-family: 'Inter', sans-serif;
-    color: #fff;
-    min-height: 100vh;
-    display:flex;
-    flex-direction:column;
+  /* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #000;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ░ HEADER – Apple Style ░ */
+header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  background: #000;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+header a {
+  color: #888;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 4px;
+  transition: 0.25s;
+}
+
+header a.active {
+  color: #fff;
+}
+
+header a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  border-radius: 6px;
+  background: #ff9f0a;         /* Apple Calculator ORANGE */
+}
+
+/* ░ GRID AREA ░ */
+.grid {
+  padding: 28px;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+/* ░ APPLE STYLE BOXES ░ */
+.item {
+  background: #1c1c1e;                       /* iOS card background */
+  border-radius: 22px;
+  padding: 24px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.25s;
+  cursor: pointer;
+
+  /* Soft Apple shadow */
+  box-shadow: 
+    0 8px 18px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.item:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 26px rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* ░ ICON STYLE ░ */
+.icon {
+  font-size: 42px;
+  margin-bottom: 8px;
+  color: #ff9f0a;              /* Apple Calculator orange */
+  transition: 0.25s;
+}
+
+.item:hover .icon {
+  transform: scale(1.15);
+}
+
+/* ░ TEXT STYLE ░ */
+.item div {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e5e5e7;
+  text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .grid {
+    padding: 18px;
+    gap: 18px;
   }
-  
 
   header {
-    display:flex;
-    align-items:center;
-    justify-content:flex-start;
-    padding:18px 24px;
-    font-size:24px;
-    font-weight:700;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top:0;
-    z-index:10;
-  }
-
-  
-  header a {
-    margin-right:28px;
-    color: #ccc;
-    text-decoration:none;
-    font-weight:500;
-    position:relative;
-    transition: all 0.3s ease;
-  }
-
-  header a.active, header a:hover {
-    color: #fff;
-  }
-
-  header a.active::after, header a:hover::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left:0;
-    width:100%;
-    height:3px;
-    background: linear-gradient(90deg,#00ffe1,#ff00d4);
-    border-radius:2px;
-  }
-
-  .grid {
-    padding:30px 40px 60px;
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap:40px;
-  }
-
-  .item {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius:16px;
-    padding:20px;
-    transition: all 0.4s ease;
-    cursor:pointer;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-  }
-
-  .item:hover {
-    transform: translateY(-8px) scale(1.05);
-    background: rgba(255,255,255,0.1);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+    padding: 14px 18px;
+    gap: 16px;
   }
 
   .icon {
-    font-size:50px;
-    margin-bottom:14px;
-    color: #00ffe1;
-    transition: all 0.4s ease;
+    font-size: 38px;
   }
-
-  .item:hover .icon {
-    color: #ff00d4;
-    transform: rotate(15deg) scale(1.2);
-  }
-
-  .item div {
-    font-size:16px;
-    font-weight:600;
-    color: #ddd;
-    text-align:center;
-  }
-
-  @media (max-width: 600px) {
-    .grid {
-      gap:20px;
-      padding:20px;
-    }
-    header {
-      font-size:20px;
-      padding:14px 18px;
-    }
-  }
-                       
+}
 </style>
+  
 </head>  
-<body>  <header>  
+<body>
+  <header>  
   <a href="index.html">Calculator</a>  
   <a href="conhistory.html" class="active">History</a>  
   <a href="convert.html" class="active">Converter</a>  
