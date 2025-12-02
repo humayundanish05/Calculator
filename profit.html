@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profit Calculator</title>
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .calculator{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  select{
+    padding:10px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  button{
+    padding:10px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+
+  button:hover{
+    background:#222;
+  }
+
+  .result{
+    margin-top:10px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Profit Calculator</h1>
+
+<div class="calculator">
+  <input type="number" id="costPrice" placeholder="Cost Price" />
+  <input type="number" id="sellingPrice" placeholder="Selling Price" />
+
+  <select id="calcType">
+    <option value="profit">Profit</option>
+    <option value="loss">Loss</option>
+    <option value="percentage">Profit/Loss %</option>
+  </select>
+
+  <button onclick="calculateProfit()">Calculate</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function calculateProfit(){
+  const cp = parseFloat(document.getElementById('costPrice').value);
+  const sp = parseFloat(document.getElementById('sellingPrice').value);
+  const type = document.getElementById('calcType').value;
+
+  if(isNaN(cp) || isNaN(sp)){
+    document.getElementById('result').textContent = "Enter valid numbers!";
+    return;
+  }
+
+  let result;
+  switch(type){
+    case 'profit':
+      result = sp > cp ? sp - cp : 0;
+      break;
+    case 'loss':
+      result = cp > sp ? cp - sp : 0;
+      break;
+    case 'percentage':
+      if(sp > cp){
+        result = ((sp - cp)/cp)*100;
+      } else if(cp > sp){
+        result = -((cp - sp)/cp)*100;
+      } else result = 0;
+      break;
+  }
+
+  document.getElementById('result').textContent = `Result: ${result}${type==='percentage'?' %':''}`;
+}
+</script>
+
+</body>
+</html>
