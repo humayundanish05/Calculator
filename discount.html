@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Discount Calculator</title>
+
+<style>
+  body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Inter,system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 0;
+  }
+
+  h1{
+    margin-bottom:30px;
+    font-size:28px;
+  }
+
+  .box{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:90%;
+    max-width:400px;
+  }
+
+  input{
+    padding:12px;
+    font-size:16px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+  }
+
+  button{
+    padding:12px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#0f0;
+    cursor:pointer;
+  }
+  button:hover{
+    background:#222;
+  }
+
+  .result{
+    margin-top:12px;
+    font-size:20px;
+    text-align:center;
+    color:#0f0;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Discount Calculator</h1>
+
+<div class="box">
+  <input type="number" id="price" placeholder="Original Price">
+
+  <input type="number" id="discount" placeholder="Discount %">
+
+  <button onclick="calc()">Calculate</button>
+
+  <div class="result" id="result">Result: </div>
+</div>
+
+<script>
+function calc(){
+  const price = parseFloat(document.getElementById('price').value);
+  const discount = parseFloat(document.getElementById('discount').value);
+
+  if(isNaN(price) || isNaN(discount)){
+    document.getElementById('result').textContent = "Enter valid numbers!";
+    return;
+  }
+
+  const saved = price * (discount / 100);
+  const finalPrice = price - saved;
+
+  document.getElementById('result').innerHTML =
+    `Final Price: ${finalPrice}<br>Saved: ${saved}`;
+}
+</script>
+
+</body>
+</html>
