@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Savings Goal</title>
+<style>
+ body{margin:0;background:#000;color:#fff;font-family:Inter,system-ui;padding:22px}
+ .card{max-width:720px;margin:auto;background:#0f0f0f;padding:18px;border-radius:12px}
+ input,select{width:100%;padding:10px;margin-bottom:10px;border:none;border-radius:8px;background:#191919;color:#fff}
+ button{padding:10px;border:none;border-radius:8px;background:#0b7;color:#000;font-weight:700;cursor:pointer}
+ .out{margin-top:12px;color:#9f9}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Savings Goal</h2>
+
+  <input id="goal" type="number" placeholder="Target Amount (Goal)">
+  <input id="current" type="number" placeholder="Current Savings (optional)">
+  <input id="rate" type="number" step="0.01" placeholder="Annual Rate %">
+  <input id="years" type="number" placeholder="Years to Reach Goal">
+  <select id="freq">
+    <option value="12">Monthly</option>
+    <option value="4">Quarterly</option>
+    <option value="1">Yearly</option>
+  </select>
+
+  <button onclick="calc()">Calculate</button>
+  <a style="color:#9f9;margin-left:16px" href="finance.html">← Back</a>
+
+  <div id="out" class="out"></div>
+</div>
+
+<script>
+function calc(){
+  const goal = +document.getElementById("goal").value;
+  const current = +document.getElementById("current").value || 0;
+  const rate = +document.getElementById("rate").value/100;
+  const years = +document.getElementById("years").value;
+  const n = +document.getElementById("freq").value;
+
+  const growth = current * Math.pow(1 + rate/n, n*years);
+  const needed = goal - growth;
+  const deposit = (needed * (rate/n)) / (Math.pow(1 + rate/n, n*years) - 1);
+
+  document.getElementById("out").innerHTML =
+    `Required periodic deposit: <strong>${deposit.toFixed(2)}</strong>`;
+}
+</script>
+</body>
+</html>
