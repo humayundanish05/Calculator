@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NPV & IRR</title>
+<style>
+ body{background:#000;color:#fff;font-family:Inter;padding:22px}
+ .card{max-width:720px;margin:auto;background:#0f0f0f;padding:18px;border-radius:12px}
+ textarea{width:100%;height:140px;background:#191919;color:#fff;border:none;border-radius:8px;padding:10px;margin-bottom:10px}
+ input{width:100%;padding:10px;border:none;background:#191919;color:#fff;border-radius:8px;margin-bottom:10px}
+ button{padding:10px;background:#0b7;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>NPV / IRR</h2>
+
+  <input id="rate" type="number" placeholder="Discount Rate %">
+  <textarea id="flows" placeholder="Cashflows (comma separated)
+Example:
+-1000, 200, 300, 400, 500"></textarea>
+
+  <button onclick="calc()">Calculate</button>
+  <a href="finance.html" style="color:#9f9;margin-left:12px">← Back</a>
+
+  <div id="out" style="margin-top:12px;color:#9f9"></div>
+</div>
+
+<script>
+function calc(){
+  const r = +document.getElementById("rate").value/100;
+  const arr = document.getElementById("flows").value.split(",").map(v=>+v.trim());
+  let npv = 0;
+  for(let i=0;i<arr.length;i++) npv += arr[i]/Math.pow(1+r,i);
+
+  function irr(values){
+    let guess = 0.1;
+    for(let i=0;i<100;i++){
+      let npv = 0, dnpv = 0;
+      for(let t=0;t<values.length;t++){
+        npv += values[t]/Math.pow(1+guess,t);
+        dnpv += -t*values[t]/Math.pow(1+guess,t+1);
+      }
+      const newGuess = guess - npv/dnpv;
+      if(Math.abs(newGuess-guess)<1e-7) break;
+      guess = newGuess;
+    }
+    return guess;
+  }
+
+  const i = irr(arr)*100;
+  document.getElementById("out").innerHTML =
+    `NPV: <strong>${npv.toFixed(2)}</strong><br>IRR: <strong>${i.toFixed(4)}%</strong>`;
+}
+</script>
+</body>
+</html>
