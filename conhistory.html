@@ -1,54 +1,156 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Converter History</title>
 
 <style>
+  /* RESET */
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{
-    margin:0;
-    padding:0;
-    background:#0a0a0a;
-    font-family:Inter, sans-serif;
+    background:#000;
+    font-family:Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    color:#fff;
+    min-height:100vh;
+  }
+
+  /* ░ APPLE NAVIGATION ░ */
+  header{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:18px 24px;
+    background:#000;
+    position:sticky;
+    top:0;
+    z-index:20;
+    font-weight:600;
+  }
+  header a{
+    color:#888;
+    text-decoration:none;
+    font-size:15px;
+    padding-bottom:4px;
+    position:relative;
+    transition:0.2s;
+  }
+  header a.active{
     color:#fff;
   }
-  header{
-    padding:15px;
-    background:#111;
-    font-size:20px;
-    font-weight:600;
-    border-bottom:1px solid #222;
+  header a.active::after{
+    content:"";
+    position:absolute;
+    left:0;bottom:-4px;
+    width:100%;height:3px;
+    border-radius:6px;
+    background:#ff9f0a;
   }
-  .wrap{
-    padding:20px;
-  }
-  .entry{
-    padding:12px;
-    margin-bottom:10px;
-    background:#131313;
-    border-left:4px solid #0ff;
-    font-size:17px;
-  }
-</style>
 
+  /* ░ PAGE WRAPPER ░ */
+  .wrap{
+    padding:22px;
+  }
+
+  /* ░ GLASS SEARCH BAR ░ */
+  .searchBox{
+    width:100%;
+    margin-bottom:18px;
+    backdrop-filter:blur(18px);
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:15px;
+    color:#fff;
+    outline:none;
+  }
+
+  /* ░ HISTORY ENTRY (Apple Card Style) ░ */
+  .entry{
+    padding:16px;
+    margin-bottom:12px;
+    background:#1c1c1e;
+    border-radius:18px;
+    font-size:16px;
+    font-weight:500;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 8px 18px rgba(0,0,0,0.55);
+    transition:0.25s;
+  }
+  .entry:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 28px rgba(0,0,0,0.7);
+  }
+
+  /* Swipe delete button */
+  .delBtn{
+    background:#ff453a;
+    padding:8px 14px;
+    border-radius:12px;
+    font-size:14px;
+    cursor:pointer;
+    opacity:0;
+    transform:translateX(20px);
+    transition:0.25s;
+  }
+  .entry:hover .delBtn{
+    opacity:1;
+    transform:translateX(0);
+  }
+
+</style>
 </head>
 <body>
 
-<header>Converter History</header>
-<p>currently not working, but I'm working on this page.</p>
-<div class="wrap" id="historyList"></div>
+<header>
+  <a href="index.html">Calculator</a>
+  <a href="convert.html">Converter</a>
+  <a href="converterHistory.html" class="active">History</a>
+</header>
+
+<div class="wrap">
+  <input type="text" class="searchBox" placeholder="Search history..." id="search">
+  <div id="historyList"></div>
+</div>
 
 <script>
   const list = document.getElementById("historyList");
-  const saved = JSON.parse(localStorage.getItem("converterHistory") || "[]");
+  const search = document.getElementById("search");
+  let saved = JSON.parse(localStorage.getItem("converterHistory") || "[]");
 
-  saved.forEach(h=>{
-    const div = document.createElement("div");
-    div.className = "entry";
-    div.textContent = h;
-    list.appendChild(div);
-  });
+  function render(data){
+    list.innerHTML = "";
+    data.forEach((text, i)=>{
+      const row = document.createElement("div");
+      row.className = "entry";
+
+      const value = document.createElement("div");
+      value.textContent = text;
+
+      const del = document.createElement("div");
+      del.className = "delBtn";
+      del.textContent = "Delete";
+      del.onclick = ()=>{
+        saved.splice(i,1);
+        localStorage.setItem("converterHistory", JSON.stringify(saved));
+        render(saved);
+      };
+
+      row.appendChild(value);
+      row.appendChild(del);
+      list.appendChild(row);
+    })
+  }
+
+  search.oninput = ()=>{
+    const f = saved.filter(x => x.toLowerCase().includes(search.value.toLowerCase()));
+    render(f);
+  };
+
+  render(saved);
 </script>
 
 </body>
