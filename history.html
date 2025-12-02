@@ -6,100 +6,225 @@
 <title>Calculation History</title>
 
 <style>
-  /* ====== Apple Feel Global Styling ====== */
-  body {
-    margin: 0;
-    padding: 0;
-    background: #0b0b0b;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, sans-serif;
-    color: #fff;
-  }
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  background:#000;
+  color:#fff;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+  min-height:100vh;
+}
 
-  /* ====== iOS / macOS Navigation Bar ====== */
-  .nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 55px;
-    padding: 0 15px;
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .nav button {
-    padding: 6px 12px;
-    border-radius: 12px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  .nav button:hover {
-    background: rgba(255,255,255,0.18);
-  }
-  .nav-title {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-  }
+/* ────────────────────── NAVIGATION (Apple Style) ────────────────────── */
+header{
+  display:flex;
+  align-items:center;
+  gap:22px;
+  padding:18px 24px;
+  background:#000;
+  position:sticky;
+  top:0;
+  z-index:20;
+  font-size:15px;
+  font-weight:600;
+  text-transform:uppercase;
+}
+header a{
+  color:#777;
+  text-decoration:none;
+  padding:6px 8px;
+  border-radius:12px;
+  transition:0.2s;
+}
+header a.active{
+  background:#202020;
+  color:#fff;
+}
 
-  /* ====== List Container ====== */
-  .wrap {
-    padding: 20px;
-  }
+/* ────────────────────── SEARCH BAR (Glassmorphic) ────────────────────── */
+.searchWrap{
+  padding:16px 22px;
+  position:sticky;
+  top:64px;
+  backdrop-filter:blur(12px);
+  background:rgba(0,0,0,0.4);
+  z-index:19;
+}
+.searchBox{
+  width:100%;
+  padding:12px 16px;
+  border:none;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  font-size:16px;
+}
 
-  /* ====== Apple Card Style Entries ====== */
-  .entry {
-    padding: 14px 16px;
-    margin-bottom: 14px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 18px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.08);
-    font-size: 18px;
-    transition: 0.25s;
-  }
-  .entry:hover {
-    background: rgba(255,255,255,0.08);
-    transform: translateY(-2px);
-  }
+/* ────────────────────── HISTORY LIST ────────────────────── */
+.wrap{
+  padding:20px;
+  padding-top:90px;
+}
+.entry{
+  background:#1c1c1e;
+  padding:16px 18px;
+  margin-bottom:14px;
+  border-radius:18px;
+  font-size:17px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:0.2s;
+  position:relative;
+  overflow:hidden;
+}
+.entryText{flex:1;}
+
+/* FAVORITE STAR */
+.star{
+  font-size:22px;
+  margin-left:12px;
+  cursor:pointer;
+  transition:0.2s;
+  color:#777;
+}
+.star.active{
+  color:#ffcc00;
+  transform:scale(1.2);
+}
+
+/* SWIPE DELETE */
+.deleteBtn{
+  position:absolute;
+  right:-90px;
+  top:0;
+  height:100%;
+  width:90px;
+  background:#ff3b30;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
+  font-weight:600;
+  transition:0.25s;
+}
+.entry.swiped .deleteBtn{
+  right:0;
+}
+.entry.swiped{
+  transform:translateX(-90px);
+}
+
+/* FAVORITES SECTION */
+#favSection{
+  margin-top:40px;
+  border-top:1px solid #222;
+  padding-top:20px;
+}
 
 </style>
-
 </head>
 <body>
 
-<!-- ================== NAVIGATION BAR ================== -->
-<div class="nav">
-  <button onclick="window.location.href='index.html'">← Back</button>
-  <div class="nav-title">Calculation History</div>
-  <button onclick="clearHistory()">Clear</button>
+<!-- NAVIGATION -->
+<header>
+  <a href="index.html">Home</a>
+  <a href="converter.html">Converter</a>
+  <a href="history.html" class="active">History</a>
+</header>
+
+<!-- SEARCH -->
+<div class="searchWrap">
+  <input class="searchBox" id="search" placeholder="Search history..." />
 </div>
 
+<!-- HISTORY LIST -->
 <div class="wrap" id="historyList"></div>
 
+<!-- FAVORITES -->
+<div class="wrap" id="favSection">
+  <h3 style="opacity:0.8;font-weight:600;margin-bottom:12px;">Favorites</h3>
+  <div id="favList"></div>
+</div>
+
 <script>
-  const list = document.getElementById("historyList");
-  const saved = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+const list = document.getElementById("historyList");
+const favList = document.getElementById("favList");
+let saved = JSON.parse(localStorage.getItem("calcHistory")||"[]");
+let favs = JSON.parse(localStorage.getItem("favHistory")||"[]");
 
-  saved.forEach(h => {
-    const div = document.createElement("div");
-    div.className = "entry";
-    div.textContent = h;
-    list.appendChild(div);
+function render(){
+  list.innerHTML="";
+  saved.forEach((h,i)=>{
+    const row = document.createElement("div");
+    row.className = "entry";
+
+    const text = document.createElement("div");
+    text.className = "entryText";
+    text.textContent = h;
+
+    const star = document.createElement("div");
+    star.className = "star";
+    star.innerHTML = favs.includes(h) ? "★" : "☆";
+    if(favs.includes(h)) star.classList.add("active");
+
+    star.onclick = ()=>{
+      if(favs.includes(h)){
+        favs = favs.filter(x=>x!==h);
+      }else{
+        favs.push(h);
+      }
+      localStorage.setItem("favHistory", JSON.stringify(favs));
+      render();
+      renderFavs();
+    };
+
+    const del = document.createElement("div");
+    del.className = "deleteBtn";
+    del.textContent = "Delete";
+    del.onclick=()=>{
+      saved.splice(i,1);
+      localStorage.setItem("calcHistory",JSON.stringify(saved));
+      render();
+    };
+
+    let startX=0;
+    row.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+    row.addEventListener("touchmove",e=>{
+      if(e.touches[0].clientX < startX-40){ row.classList.add("swiped"); }
+      if(e.touches[0].clientX > startX+40){ row.classList.remove("swiped"); }
+    });
+
+    row.appendChild(text);
+    row.appendChild(star);
+    row.appendChild(del);
+    list.appendChild(row);
   });
+}
 
-  function clearHistory() {
-    localStorage.removeItem("calcHistory");
-    list.innerHTML = "";
-  }
+function renderFavs(){
+  favList.innerHTML="";
+  favs.forEach(f=>{
+    const row=document.createElement("div");
+    row.className="entry";
+    row.innerHTML = `<div class='entryText'>${f}</div>`;
+    favList.appendChild(row);
+  });
+}
+
+render();
+renderFavs();
+
+// SEARCH
+const search=document.getElementById("search");
+search.oninput=()=>{
+  const val = search.value.toLowerCase();
+  document.querySelectorAll('.entry').forEach(e=>{
+    if(e.textContent.toLowerCase().includes(val)) e.style.display='flex';
+    else e.style.display='none';
+  });
+};
 </script>
 
 </body>
