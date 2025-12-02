@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Loan / EMI Calculator</title>
+<style>
+  body{margin:0;background:#000;color:#fff;font-family:Inter,system-ui;display:flex;flex-direction:column;align-items:center;padding:24px}
+  h1{margin:0 0 18px 0}
+  .box{width:100%;max-width:720px;background:#0f0f0f;padding:18px;border-radius:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .field{flex:1;min-width:150px;margin-bottom:10px}
+  input,select{width:100%;padding:10px;border-radius:8px;border:none;background:#191919;color:#fff}
+  button{padding:10px;border-radius:8px;border:none;background:#0b7;color:#000;font-weight:700;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:right}
+  th{text-align:left;color:#9f9}
+  .muted{opacity:0.7}
+</style>
+</head>
+<body>
+<h1>Loan / EMI Calculator</h1>
+<div class="box">
+  <div class="row">
+    <div class="field">
+      <label>Principal</label>
+      <input id="principal" type="number" placeholder="100000" />
+    </div>
+    <div class="field">
+      <label>Annual Rate (%)</label>
+      <input id="rate" type="number" step="0.01" placeholder="7.5" />
+    </div>
+    <div class="field">
+      <label>Term</label>
+      <input id="term" type="number" placeholder="Years" />
+    </div>
+    <div class="field">
+      <label>Payments / year</label>
+      <select id="freq">
+        <option value="12">Monthly (12)</option>
+        <option value="4">Quarterly (4)</option>
+        <option value="1">Yearly (1)</option>
+        <option value="52">Weekly (52)</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <button onclick="calcLoan()">Calculate</button>
+    <button onclick="downloadSchedule()" style="background:#444;color:#fff">Export CSV</button>
+    <a href="finance.html" style="margin-left:auto;color:#9f9;align-self:center">← Back</a>
+  </div>
+
+  <div id="summary" style="margin-top:14px"></div>
+
+  <div id="tableWrap"></div>
+</div>
+
+<script>
+let lastSchedule = null;
+
+function calcLoan(){
+  const P = parseFloat(document.getElementById('principal').value);
+  const annualRate = parseFloat(document.getElementById('rate').value);
+  const years = parseFloat(document.getElementById('term').value);
+  const freq = parseInt(document.getElementById('freq').value);
+
+  if(!P || !annualRate || !years || !freq){
+    alert('Enter valid inputs');
+    return;
+  }
+
+  const n = years * freq;
+  const r = annualRate / 100 / freq; // periodic rate
+  // EMI formula: A = P * r / (1 - (1+r)^-n)
+  const A = r === 0 ? P / n : (P * r) / (1 - Math.pow(1 + r, -n));
+  const total = A * n;
+  const totalInterest = total - P;
+
+  document.getElementById('summary').innerHTML =
+    `<div class="muted">Payment (${freq} / yr):</div>
+     <div><strong>${A.toFixed(2)}</strong> per period</div>
+     <div class="muted">Total paid:</div><div><strong>${total.toFixed(2)}</strong></div>
+     <div class="muted">Total interest:</div><div><strong>${totalInterest.toFixed(2)}</strong></div>`;
+
+  // amortization schedule
+  let schedule = [];
+  let balance = P;
+  for(let i=1;i<=n;i++){
+    const interest = balance * r;
+    const principalPaid = A - interest;
+    balance = Math.max(0, balance - principalPaid);
+    schedule.push({period:i,payment:A,principal:principalPaid,interest:interest,balance:balance});
+  }
+  lastSchedule = schedule;
+  renderSchedule(schedule);
+}
+
+function renderSchedule(schedule){
+  let html = '<table><thead><tr><th>Period</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead><tbody>';
+  schedule.forEach(s=>{
+    html += `<tr><td style="text-align:left">${s.period}</td>
+             <td>${s.payment.toFixed(2)}</td>
+             <td>${s.principal.toFixed(2)}</td>
+             <td>${s.interest.toFixed(2)}</td>
+             <td>${s.balance.toFixed(2)}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableWrap').innerHTML = html;
+}
+
+function downloadSchedule(){
+  if(!lastSchedule){ alert('Calculate first'); return; }
+  let csv = 'Period,Payment,Principal,Interest,Balance\n';
+  lastSchedule.forEach(s=>{
+    csv += `${s.period},${s.payment.toFixed(2)},${s.principal.toFixed(2)},${s.interest.toFixed(2)},${s.balance.toFixed(2)}\n`;
+  });
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'amortization.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
