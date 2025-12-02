@@ -4,55 +4,102 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Calculation History</title>
-  
 
 <style>
-  body{
-    margin:0;
-    padding:0;
-    background:#0a0a0a;
-    font-family:Inter, sans-serif;
-    color:#fff;
+  /* ====== Apple Feel Global Styling ====== */
+  body {
+    margin: 0;
+    padding: 0;
+    background: #0b0b0b;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, sans-serif;
+    color: #fff;
   }
-  header{
-    padding:15px;
-    background:#111;
-    font-size:20px;
-    font-weight:600;
-    border-bottom:1px solid #222;
+
+  /* ====== iOS / macOS Navigation Bar ====== */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 55px;
+    padding: 0 15px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
-  .wrap{
-    padding:20px;
+  .nav button {
+    padding: 6px 12px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
   }
-  .entry{
-    padding:12px;
-    margin-bottom:10px;
-    background:#131313;
-    border-left:4px solid #0ff;
-    font-size:18px;
+  .nav button:hover {
+    background: rgba(255,255,255,0.18);
   }
+  .nav-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* ====== List Container ====== */
+  .wrap {
+    padding: 20px;
+  }
+
+  /* ====== Apple Card Style Entries ====== */
+  .entry {
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 18px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 18px;
+    transition: 0.25s;
+  }
+  .entry:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-2px);
+  }
+
 </style>
 
 </head>
 <body>
 
-<header>Calculation History</header>
-
-<div class="wrap" id="historyList">
-  <!-- JS yahan entries inject karega -->
+<!-- ================== NAVIGATION BAR ================== -->
+<div class="nav">
+  <button onclick="window.location.href='index.html'">← Back</button>
+  <div class="nav-title">Calculation History</div>
+  <button onclick="clearHistory()">Clear</button>
 </div>
+
+<div class="wrap" id="historyList"></div>
 
 <script>
   const list = document.getElementById("historyList");
-
   const saved = JSON.parse(localStorage.getItem("calcHistory") || "[]");
 
-  saved.forEach(h=>{
+  saved.forEach(h => {
     const div = document.createElement("div");
     div.className = "entry";
     div.textContent = h;
     list.appendChild(div);
   });
+
+  function clearHistory() {
+    localStorage.removeItem("calcHistory");
+    list.innerHTML = "";
+  }
 </script>
 
 </body>
