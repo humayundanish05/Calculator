@@ -15,7 +15,6 @@
   h2 {
     text-align: center;
     margin-bottom: 20px;
-    letter-spacing: 1px;
   }
   .box {
     background: #1a1a1a;
@@ -23,7 +22,6 @@
     border-radius: 14px;
     max-width: 400px;
     margin: auto;
-    box-shadow: 0 0 20px rgba(255,255,255,0.05);
   }
   input, select {
     width: 100%;
@@ -47,13 +45,19 @@
   button:hover {
     background: #d300ff;
   }
+  .row {
+    display: flex;
+    gap: 10px;
+  }
+  .row input {
+    flex: 1;
+  }
   .out {
     margin-top: 20px;
     padding: 15px;
     background: #111;
     border-radius: 10px;
     text-align: center;
-    font-size: 18px;
   }
 </style>
 </head>
@@ -62,11 +66,19 @@
 <h2>BMI Calculator</h2>
 
 <div class="box">
-  <label>Weight</label>
+
+  <label>Weight (kg)</label>
   <input type="number" id="weight" placeholder="kg">
 
-  <label>Height</label>
-  <input type="number" id="height" placeholder="cm">
+  <label>Height Unit</label>
+  <select id="unit" onchange="swapHeightInput()">
+    <option value="cm">Centimeter (cm)</option>
+    <option value="ft">Feet + Inches</option>
+  </select>
+
+  <div id="height-area">
+    <input type="number" id="height-cm" placeholder="cm">
+  </div>
 
   <button onclick="calcBMI()">CALCULATE</button>
 
@@ -74,13 +86,49 @@
 </div>
 
 <script>
+function swapHeightInput() {
+  let unit = document.getElementById("unit").value;
+  let area = document.getElementById("height-area");
+
+  if (unit === "cm") {
+    area.innerHTML = `<input type="number" id="height-cm" placeholder="cm">`;
+  } else {
+    area.innerHTML = `
+      <div class="row">
+        <input type="number" id="height-ft" placeholder="ft">
+        <input type="number" id="height-in" placeholder="in">
+      </div>
+    `;
+  }
+}
+
 function calcBMI() {
   let w = parseFloat(document.getElementById("weight").value);
-  let h = parseFloat(document.getElementById("height").value) / 100;
+  let unit = document.getElementById("unit").value;
 
-  if (!w || !h) {
+  if (!w) {
     document.getElementById("result").innerHTML = "BMI: Invalid";
     return;
+  }
+
+  let h;
+
+  if (unit === "cm") {
+    let cm = parseFloat(document.getElementById("height-cm").value);
+    if (!cm) {
+      document.getElementById("result").innerHTML = "BMI: Invalid";
+      return;
+    }
+    h = cm / 100;
+  } else {
+    let ft = parseFloat(document.getElementById("height-ft").value);
+    let inch = parseFloat(document.getElementById("height-in").value);
+    if (!ft && !inch) {
+      document.getElementById("result").innerHTML = "BMI: Invalid";
+      return;
+    }
+    let totalInches = (ft * 12) + inch;
+    h = totalInches * 0.0254; // inches → meter
   }
 
   let bmi = (w / (h * h)).toFixed(2);
