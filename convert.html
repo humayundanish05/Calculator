@@ -7,7 +7,7 @@
 <title>Converter Hub | Premium</title>  <!-- Google Material Icons -->  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"> 
 <style>
-  /* RESET */
+/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -24,14 +24,12 @@ body {
   flex-direction: column;
 }
 
-/* ░ HEADER – Apple Style ░ */
+/* ░ HEADER – MATCHING CALCULATOR EXACTLY ░ */
 header {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 18px 24px;
-  font-size: 18px;
-  font-weight: 600;
+  padding: 16px 20px;
+  gap: 18px;
   background: #000;
   position: sticky;
   top: 0;
@@ -39,26 +37,24 @@ header {
 }
 
 header a {
-  color: #888;
   text-decoration: none;
-  position: relative;
-  padding-bottom: 4px;
-  transition: 0.25s;
+  color: #777;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: 0.2s ease;
 }
 
 header a.active {
+  background: #1c1c1e;     /* Same dark pill as calculator */
   color: #fff;
 }
 
-header a.active::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  border-radius: 6px;
-  background: #ff9f0a;         /* Apple Calculator ORANGE */
+/* No underline anymore (calculator also doesn’t use underline) */
+header a::after {
+  display: none !important;
 }
 
 /* ░ GRID AREA ░ */
@@ -71,7 +67,7 @@ header a.active::after {
 
 /* ░ APPLE STYLE BOXES ░ */
 .item {
-  background: #1c1c1e;                       /* iOS card background */
+  background: #1c1c1e;
   border-radius: 22px;
   padding: 24px 18px;
   display: flex;
@@ -79,16 +75,14 @@ header a.active::after {
   align-items: center;
   transition: 0.25s;
   cursor: pointer;
-
-  /* Soft Apple shadow */
-  box-shadow: 
+  box-shadow:
     0 8px 18px rgba(0,0,0,0.55),
     inset 0 0 0 1px rgba(255,255,255,0.04);
 }
 
 .item:hover {
   transform: translateY(-4px);
-  box-shadow: 
+  box-shadow:
     0 12px 26px rgba(0,0,0,0.7),
     inset 0 0 0 1px rgba(255,255,255,0.06);
 }
@@ -97,7 +91,7 @@ header a.active::after {
 .icon {
   font-size: 42px;
   margin-bottom: 8px;
-  color: #ff9f0a;              /* Apple Calculator orange */
+  color: #ff9f0a;
   transition: 0.25s;
 }
 
@@ -122,7 +116,7 @@ header a.active::after {
 
   header {
     padding: 14px 18px;
-    gap: 16px;
+    gap: 14px;
   }
 
   .icon {
