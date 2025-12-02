@@ -4,93 +4,150 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Length Converter</title>
+
 <style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{
-    margin:0;
     background:#000;
     color:#fff;
-    font-family:Inter,system-ui;
+    font-family:Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    padding-bottom:40px;
+  }
+
+  /* ░ APPLE NAVBAR ░ */
+  header{
     display:flex;
-    flex-direction:column;
     align-items:center;
-    padding:30px 0;
-  }
-
-  h1{
-    margin-bottom:30px;
-    font-size:28px;
-  }
-
-  .converter{
-    display:flex;
-    flex-direction:column;
     gap:20px;
-    width:90%;
-    max-width:400px;
+    padding:18px 24px;
+    background:#000;
+    position:sticky;
+    top:0;
+    z-index:20;
+    font-weight:600;
+  }
+  header a{
+    color:#888;
+    text-decoration:none;
+    font-size:15px;
+    padding-bottom:4px;
+    position:relative;
+    transition:0.2s;
+  }
+  header a.active{
+    color:#fff;
+  }
+  header a.active::after{
+    content:"";
+    position:absolute;
+    left:0;bottom:-4px;
+    width:100%;height:3px;
+    border-radius:6px;
+    background:#ff9f0a;
   }
 
+  /* ░ WRAPPER ░ */
+  .wrap{
+    padding:26px;
+  }
+
+  /* ░ TITLE ░ */
+  h1{
+    font-size:28px;
+    margin-bottom:22px;
+  }
+
+  /* ░ GLASS CARD ░ */
+  .card{
+    padding:20px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:22px;
+    backdrop-filter:blur(25px);
+    box-shadow:0 12px 30px rgba(0,0,0,0.55);
+  }
+
+  /* ░ INPUTS ░ */
   input, select{
-    padding:10px;
+    width:100%;
+    padding:12px;
+    margin-top:12px;
     font-size:16px;
-    border-radius:6px;
+    border-radius:14px;
     border:none;
     outline:none;
+    background:#1c1c1e;
+    color:#fff;
   }
 
-  input{
+  /* ░ BUTTON ░ */
+  .btn{
+    margin-top:18px;
     width:100%;
+    padding:12px;
+    font-size:17px;
+    border:none;
+    border-radius:14px;
+    background:#ff9f0a;
+    color:#000;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.25s;
+  }
+  .btn:hover{
+    background:#ffb452;
+    transform:translateY(-2px);
   }
 
+  /* ░ RESULT ░ */
   .result{
-    margin-top:10px;
-    font-size:20px;
+    margin-top:18px;
+    font-size:22px;
+    font-weight:600;
     text-align:center;
     color:#0f0;
   }
 
-  button{
-    padding:10px;
-    font-size:16px;
-    border:none;
-    border-radius:6px;
-    background:#111;
-    color:#0f0;
-    cursor:pointer;
-  }
-
-  button:hover{
-    background:#222;
-  }
 </style>
 </head>
 <body>
 
-<h1>Length Converter</h1>
+<header>
+  
+  <a href="convert.html" class="active">back to home</a>
+  
+</header>
 
-<div class="converter">
-  <input type="number" id="inputValue" placeholder="Enter value" />
+<div class="wrap">
+  <h1>Length Converter</h1>
 
-  <select id="fromUnit">
-    <option value="m">Meter (m)</option>
-    <option value="cm">Centimeter (cm)</option>
-    <option value="km">Kilometer (km)</option>
-    <option value="ft">Feet (ft)</option>
-    <option value="in">Inches (in)</option>
-    <option value="mi">Mile (mi)</option>
-  </select>
+  <div class="card">
 
-  <select id="toUnit">
-    <option value="m">Meter (m)</option>
-    <option value="cm">Centimeter (cm)</option>
-    <option value="km">Kilometer (km)</option>
-    <option value="ft">Feet (ft)</option>
-    <option value="in">Inches (in)</option>
-    <option value="mi">Mile (mi)</option>
-  </select>
+    <input type="number" id="inputValue" placeholder="Enter value">
 
-  <button onclick="convertLength()">Convert</button>
+    <select id="fromUnit">
+      <option value="m">Meter (m)</option>
+      <option value="cm">Centimeter (cm)</option>
+      <option value="km">Kilometer (km)</option>
+      <option value="ft">Feet (ft)</option>
+      <option value="in">Inches (in)</option>
+      <option value="mi">Mile (mi)</option>
+    </select>
 
-  <div class="result" id="result">Result: </div>
+    <select id="toUnit">
+      <option value="m">Meter (m)</option>
+      <option value="cm">Centimeter (cm)</option>
+      <option value="km">Kilometer (km)</option>
+      <option value="ft">Feet (ft)</option>
+      <option value="in">Inches (in)</option>
+      <option value="mi">Mile (mi)</option>
+    </select>
+
+    <button class="btn" onclick="convertLength()">Convert</button>
+
+    <div class="result" id="result">Result:</div>
+
+  </div>
 </div>
 
 <script>
@@ -114,8 +171,19 @@ function convertLength(){
   };
 
   const result = value * units[from] / units[to];
+
   document.getElementById('result').textContent = `Result: ${result} ${to}`;
+
+  /* SAVE HISTORY */
+  let history = JSON.parse(localStorage.getItem("converterHistory") || "[]");
+  history.unshift(`${value} ${from} → ${result} ${to}`);
+  localStorage.setItem("converterHistory", JSON.stringify(history));
 }
+
+/* Auto convert on typing */
+document.getElementById('inputValue').addEventListener("input", convertLength);
+document.getElementById('fromUnit').addEventListener("change", convertLength);
+document.getElementById('toUnit').addEventListener("change", convertLength);
 </script>
 
 </body>
