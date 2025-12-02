@@ -6,45 +6,135 @@
 <title>Finance Hub</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-  body{margin:0;background:#000;color:#fff;font-family:Inter,system-ui;}
-  header{padding:18px;font-size:20px;font-weight:600;display:flex;gap:12px;align-items:center}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;padding:18px}
-  .card{background:#0f0f0f;padding:18px;border-radius:12px;display:flex;flex-direction:column;gap:12px;align-items:start}
-  a{color:inherit;text-decoration:none}
-  .icon{font-size:36px;opacity:0.9}
-  small{opacity:0.6}
+  body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: Inter, system-ui;
+  }
+
+  header {
+    padding: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    border-bottom: 1px solid #111;
+  }
+
+  .sub {
+    margin-left: auto;
+    opacity: 0.6;
+    font-size: 14px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 22px;
+  }
+
+  .card {
+    background: #0f0f0f;
+    padding: 20px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid #131313;
+    transition: 0.2s ease;
+  }
+
+  .card:hover {
+    background: #151515;
+    transform: translateY(-2px);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .icon {
+    font-size: 40px;
+    opacity: 0.9;
+  }
+
+  small {
+    opacity: 0.6;
+    line-height: 1.4;
+    font-size: 13px;
+  }
 </style>
 </head>
 <body>
+
 <header>
   Finance — Calculators
-  <span style="margin-left:auto;opacity:0.6">Modular • Client-side</span>
+  <span class="sub">Modular • Client-side Only</span>
 </header>
 
 <div class="grid">
+
+  <!-- Loan Calculator -->
   <div class="card">
     <span class="material-icons icon">account_balance_wallet</span>
     <a href="loan.html"><strong>Loan / EMI</strong></a>
-    <small>EMI, amortization table, total interest</small>
+    <small>EMI, amortization table, total payable, monthly breakdown</small>
   </div>
 
+  <!-- Compound Interest -->
   <div class="card">
     <span class="material-icons icon">show_chart</span>
     <a href="compound.html"><strong>Compound Interest</strong></a>
-    <small>Periodic compounding, contributions, CAGR</small>
+    <small>Compounding frequency, yearly growth, CAGR</small>
   </div>
 
+  <!-- Savings Goal -->
   <div class="card">
-    <span class="material-icons icon">paid</span>
-    <a href="#"><strong>Savings / Goal</strong></a>
-    <small>Future feature: target savings planner</small>
+    <span class="material-icons icon">savings</span>
+    <a href="savings.html"><strong>Savings Goal</strong></a>
+    <small>Target amount, timeline, required monthly saving</small>
   </div>
 
+  <!-- NPV / IRR -->
   <div class="card">
     <span class="material-icons icon">calculate</span>
-    <a href="#"><strong>NPV / IRR</strong></a>
-    <small>Future feature: cashflow analysis</small>
+    <a href="npv.html"><strong>NPV / IRR</strong></a>
+    <small>Cashflow evaluation, net present value & return rate</small>
   </div>
+
+  <!-- Currency Converter -->
+  <div class="card">
+    <span class="material-icons icon">currency_exchange</span>
+    <a href="currency.html"><strong>Currency Converter</strong></a>
+    <small>Live FX multipliers, 20+ major currencies</small>
+  </div>
+
+  <!-- Profit / Loss -->
+  <div class="card">
+    <span class="material-icons icon">bar_chart</span>
+    <a href="profit.html"><strong>Profit / Loss</strong></a>
+    <small>Cost price, sell price, margin & percentage</small>
+  </div>
+
+  <!-- Discount Calculator -->
+  <div class="card">
+    <span class="material-icons icon">percent</span>
+    <a href="discount.html"><strong>Discount</strong></a>
+    <small>Price cut, sale price, savings & net cost</small>
+  </div>
+
+  <!-- GST / Tax Calculator -->
+  <div class="card">
+    <span class="material-icons icon">receipt_long</span>
+    <a href="tax.html"><strong>GST / Tax</strong></a>
+    <small>Percentage add/remove, net-to-gross, gross-to-net</small>
+  </div>
+
 </div>
+
 </body>
 </html>
