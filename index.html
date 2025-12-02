@@ -1,146 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator Clone</title>
-  <style>
-   body {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator Clone</title>
+<style>
+body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background: #000;
   font-family: sans-serif;
+  margin: 0;
 }
-
 .calculator {
   background: #0f1720;
   padding: 20px;
-  border-radius: 30px;
+  border-radius: 15px;
+  width: 280px;
 }
-
 .display {
   background: #0b1220;
   color: white;
-  font-size: 2.5rem;
+  font-size: 2rem;
   text-align: right;
-  padding: 20px;
-  border-radius: 15px;
+  padding: 15px;
+  border-radius: 10px;
   margin-bottom: 10px;
-  min-width: 260px;
+  min-height: 50px;
   word-wrap: break-word;
 }
-
 .buttons {
   display: grid;
-  grid-template-columns: repeat(4, 65px);
-  grid-gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
-
 button {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   border: none;
-  border-radius: 50%;
-  padding: 20px;
+  border-radius: 8px;
+  padding: 15px;
   cursor: pointer;
 }
-
 button.gray { background: #808080; color: white; }
 button.dark { background: #333333; color: white; }
 button.orange { background: #ff9500; color: white; }
-
-button.zero { grid-column: span 2; border-radius: 30px; }
-  </style>
+button.zero { grid-column: span 2; }
+</style>
 </head>
 <body>
-  <div class="calculator">
-    <div class="display" id="display">0</div>
-    <div class="buttons">
-      <button class="gray" id="clear">C</button>
-      <button class="gray" id="plus-minus">+/-</button>
-      <button class="gray" id="percent">%</button>
-      <button class="orange" data-op="/">÷</button>
+<div class="calculator">
+  <div class="display" id="display">0</div>
+  <div class="buttons">
+    <button class="gray" id="clear">C</button>
+    <button class="gray" id="plus-minus">+/-</button>
+    <button class="gray" id="percent">%</button>
+    <button class="orange" data-op="/">÷</button>
 
-      <button class="dark" data-num="7">7</button>
-      <button class="dark" data-num="8">8</button>
-      <button class="dark" data-num="9">9</button>
-      <button class="orange" data-op="*">×</button>
+    <button class="dark" data-num="7">7</button>
+    <button class="dark" data-num="8">8</button>
+    <button class="dark" data-num="9">9</button>
+    <button class="orange" data-op="*">×</button>
 
-      <button class="dark" data-num="4">4</button>
-      <button class="dark" data-num="5">5</button>
-      <button class="dark" data-num="6">6</button>
-      <button class="orange" data-op="-">-</button>
+    <button class="dark" data-num="4">4</button>
+    <button class="dark" data-num="5">5</button>
+    <button class="dark" data-num="6">6</button>
+    <button class="orange" data-op="-">-</button>
 
-      <button class="dark" data-num="1">1</button>
-      <button class="dark" data-num="2">2</button>
-      <button class="dark" data-num="3">3</button>
-      <button class="orange" data-op="+">+</button>
+    <button class="dark" data-num="1">1</button>
+    <button class="dark" data-num="2">2</button>
+    <button class="dark" data-num="3">3</button>
+    <button class="orange" data-op="+">+</button>
 
-      <button class="dark zero" data-num="0">0</button>
-      <button class="dark" data-num=".">.</button>
-      <button class="orange" id="equals">=</button>
-    </div>
+    <button class="dark zero" data-num="0">0</button>
+    <button class="dark" data-num=".">.</button>
+    <button class="orange" id="equals">=</button>
   </div>
-  <script>
-   const display = document.getElementById('display');
+</div>
+<script>
+const display = document.getElementById('display');
 let current = '';
 let operator = '';
 let previous = '';
+
+function updateDisplay() {
+  if(current === '') display.textContent = '0';
+  else display.textContent = current;
+}
 
 document.querySelectorAll('[data-num]').forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn.dataset.num === '.' && current.includes('.')) return;
     current += btn.dataset.num;
-    display.textContent = current;
+    liveCalculate();
+    updateDisplay();
   });
 });
 
 document.querySelectorAll('[data-op]').forEach(btn => {
   btn.addEventListener('click', () => {
     if(current === '') return;
-    if(previous !== '') calculate();
+    if(previous !== '') liveCalculate();
     operator = btn.dataset.op;
     previous = current;
     current = '';
+    updateDisplay();
   });
 });
 
-document.getElementById('equals').addEventListener('click', calculate);
+document.getElementById('equals').addEventListener('click', () => {
+  liveCalculate();
+  operator = '';
+  previous = '';
+  updateDisplay();
+});
 
 document.getElementById('clear').addEventListener('click', () => {
   current = '';
   previous = '';
   operator = '';
-  display.textContent = '0';
+  updateDisplay();
 });
 
 document.getElementById('plus-minus').addEventListener('click', () => {
   if(current) current = (parseFloat(current) * -1).toString();
-  display.textContent = current;
+  updateDisplay();
 });
 
 document.getElementById('percent').addEventListener('click', () => {
   if(current) current = (parseFloat(current)/100).toString();
-  display.textContent = current;
+  updateDisplay();
 });
 
-function calculate() {
-  let result;
+function liveCalculate() {
+  if(previous === '' || operator === '' || current === '') return;
   const prev = parseFloat(previous);
   const curr = parseFloat(current);
   if(isNaN(prev) || isNaN(curr)) return;
   switch(operator) {
-    case '+': result = prev + curr; break;
-    case '-': result = prev - curr; break;
-    case '*': result = prev * curr; break;
-    case '/': result = prev / curr; break;
+    case '+': current = (prev + curr).toString(); break;
+    case '-': current = (prev - curr).toString(); break;
+    case '*': current = (prev * curr).toString(); break;
+    case '/': current = (prev / curr).toString(); break;
   }
-  current = result.toString();
-  operator = '';
-  previous = '';
-  display.textContent = current;
 }
-  </script>
+</script>
 </body>
 </html>
