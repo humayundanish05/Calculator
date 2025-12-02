@@ -1,163 +1,213 @@
+
+
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Converter History</title>
 
-<style>
-  /* RESET */
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body{
-    background:#000;
-    font-family:Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-    color:#fff;
-    min-height:100vh;
+<html lang="en">    
+<head>    
+<meta charset="utf-8">    
+<meta name="viewport" content="width=device-width,initial-scale=1">    
+<title>Converter Hub | Premium</title>  <!-- Google Material Icons -->  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">   
+<style>  
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #000;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ░ HEADER – Apple Style ░ */
+header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  background: #000;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+header a {
+  color: #888;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 4px;
+  transition: 0.25s;
+}
+
+header a.active {
+  color: #fff;
+}
+
+header a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  border-radius: 6px;
+  background: #ff9f0a;         /* Apple Calculator ORANGE */
+}
+
+/* ░ GRID AREA ░ */
+.grid {
+  padding: 28px;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+/* ░ APPLE STYLE BOXES ░ */
+.item {
+  background: #1c1c1e;                       /* iOS card background */
+  border-radius: 22px;
+  padding: 24px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.25s;
+  cursor: pointer;
+
+  /* Soft Apple shadow */
+  box-shadow: 
+    0 8px 18px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.item:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 26px rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* ░ ICON STYLE ░ */
+.icon {
+  font-size: 42px;
+  margin-bottom: 8px;
+  color: #ff9f0a;              /* Apple Calculator orange */
+  transition: 0.25s;
+}
+
+.item:hover .icon {
+  transform: scale(1.15);
+}
+
+/* ░ TEXT STYLE ░ */
+.item div {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e5e5e7;
+  text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .grid {
+    padding: 18px;
+    gap: 18px;
   }
 
-  /* ░ PERFECT APPLE NAVIGATION — MATCHES CALCULATOR + CONVERTER ░ */
-  header{
-    display:flex;
-    align-items:center;
-    gap:26px;
-    padding:20px 26px;
-    background:#000;
-    position:sticky;
-    top:0;
-    z-index:30;
-    font-size:17px;
-    font-weight:600;
-  }
-  header a{
-    color:#8d8d8f;
-    text-decoration:none;
-    padding-bottom:6px;
-    position:relative;
-    transition:0.25s;
-  }
-  header a:hover{
-    color:#fff;
-  }
-  header a.active{
-    color:#fff;
-  }
-  header a.active::after{
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:-5px;
-    width:100%;
-    height:3px;
-    background:#ff9f0a;
-    border-radius:6px;
+  header {
+    padding: 14px 18px;
+    gap: 16px;
   }
 
-  /* ░ WRAPPER ░ */
-  .wrap{
-    padding:26px;
+  .icon {
+    font-size: 38px;
   }
-
-  /* ░ APPLE GLASS SEARCH BAR ░ */
-  .searchBox{
-    width:100%;
-    margin-bottom:22px;
-    backdrop-filter:blur(20px);
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.16);
-    border-radius:16px;
-    padding:14px 16px;
-    font-size:15px;
-    color:#fff;
-    outline:none;
-  }
-
-  /* ░ APPLE HISTORY CARD ░ */
-  .entry{
-    padding:18px 16px;
-    margin-bottom:14px;
-    background:#1c1c1e;
-    border-radius:20px;
-    font-size:16px;
-    font-weight:500;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 8px 20px rgba(0,0,0,0.55);
-    transition:0.25s ease;
-  }
-  .entry:hover{
-    transform:translateY(-4px);
-    box-shadow:0 14px 30px rgba(0,0,0,0.75);
-  }
-
-  /* Swipe-like Delete */
-  .delBtn{
-    background:#ff453a;
-    padding:8px 16px;
-    border-radius:14px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    opacity:0;
-    transform:translateX(20px);
-    transition:0.3s ease;
-  }
-  .entry:hover .delBtn{
-    opacity:1;
-    transform:translateX(0);
-  }
-
-</style>
-</head>
-<body>
-
-<header>
-  <a href="index.html">Calculator</a>
-  <a href="convert.html">Converter</a>
-  <a href="converterHistory.html" class="active">History</a>
-</header>
-
-<div class="wrap">
-  <input type="text" class="searchBox" placeholder="Search history..." id="search">
-  <div id="historyList"></div>
-</div>
-
-<script>
-  const list = document.getElementById("historyList");
-  const search = document.getElementById("search");
-  let saved = JSON.parse(localStorage.getItem("converterHistory") || "[]");
-
-  function render(data){
-    list.innerHTML = "";
-    data.forEach((text, i)=>{
-      const row = document.createElement("div");
-      row.className = "entry";
-
-      const value = document.createElement("div");
-      value.textContent = text;
-
-      const del = document.createElement("div");
-      del.className = "delBtn";
-      del.textContent = "Delete";
-      del.onclick = ()=>{
-        saved.splice(i,1);
-        localStorage.setItem("converterHistory", JSON.stringify(saved));
-        render(saved);
-      };
-
-      row.appendChild(value);
-      row.appendChild(del);
-      list.appendChild(row);
-    });
-  }
-
-  search.oninput = ()=>{
-    const filtered = saved.filter(x => x.toLowerCase().includes(search.value.toLowerCase()));
-    render(filtered);
-  };
-
-  render(saved);
-</script>
-
-</body>
-</html>
+}
+</style>  
+</head>    
+<body>  <header>    
+  <a href="index.html">Calculator</a>    
+  <a href="conhistory.html">History</a>    
+  <a href="convert.html" class="active">Converter</a>    
+</header>  <div class="grid">    
+  <div class="item">    
+    <a href="currency.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">attach_money</span>    
+      <div>Currency</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="length.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">straighten</span>    
+      <div>Length</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="mass.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">fitness_center</span>    
+      <div>Mass</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="area.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">grid_on</span>    
+      <div>Area</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="time.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">access_time</span>    
+      <div>Time</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="finance.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">account_balance</span>    
+      <div>Finance</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="data.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">data_usage</span>    
+      <div>Data</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="date.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">date_range</span>    
+      <div>Date</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="discount.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">local_offer</span>    
+      <div>Discount</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="volume.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">volume_up</span>    
+      <div>Volume</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="numeral.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">calculate</span>    
+      <div>Numeral System</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="speed.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">speed</span>    
+      <div>Speed</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="temperature.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">thermostat</span>    
+      <div>Temperature</div>    
+    </a>    
+  </div>    <div class="item">    
+    <a href="bmi.html" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;">    
+      <span class="material-icons icon">monitor_weight</span>    
+      <div>BMI</div>    
+    </a>    
+  </div>    
+</div>  </body>    
+</html>  
