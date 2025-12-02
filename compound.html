@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Compound Interest</title>
+<style>
+  body{margin:0;background:#000;color:#fff;font-family:Inter,system-ui;display:flex;justify-content:center;padding:24px}
+  .card{width:100%;max-width:720px;background:#0f0f0f;padding:18px;border-radius:12px}
+  input,select{width:100%;padding:10px;border-radius:8px;border:none;background:#191919;color:#fff;margin-bottom:10px}
+  button{padding:10px;border-radius:8px;border:none;background:#0b7;color:#000;font-weight:700;cursor:pointer}
+  .row{display:flex;gap:8px}
+  .out{margin-top:12px;color:#9f9}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>Compound Interest</h2>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <input id="principal" placeholder="Initial principal (P)" type="number">
+    <input id="contrib" placeholder="Periodic contribution (optional)" type="number">
+    <input id="rate" placeholder="Annual rate (%)" type="number" step="0.01">
+    <input id="years" placeholder="Years" type="number">
+    <select id="freq">
+      <option value="12">Monthly</option>
+      <option value="4">Quarterly</option>
+      <option value="1">Yearly</option>
+      <option value="52">Weekly</option>
+    </select>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <button onclick="calcCompound()">Calculate</button>
+    <a href="finance.html" style="margin-left:auto;color:#9f9;align-self:center">← Back</a>
+  </div>
+
+  <div id="out" class="out"></div>
+</div>
+
+<script>
+function calcCompound(){
+  const P = parseFloat(document.getElementById('principal').value) || 0;
+  const contrib = parseFloat(document.getElementById('contrib').value) || 0;
+  const annual = parseFloat(document.getElementById('rate').value);
+  const years = parseFloat(document.getElementById('years').value);
+  const freq = parseInt(document.getElementById('freq').value);
+
+  if(years<=0 || isNaN(annual)){ alert('Enter valid inputs'); return; }
+  const r = annual/100;
+  const n = freq;
+  // Future value of principal
+  const FV_P = P * Math.pow(1 + r/n, n*years);
+  // Future value of recurring contributions (ordinary annuity)
+  const FV_C = contrib * ( (Math.pow(1 + r/n, n*years) - 1) / (r/n) );
+  const total = FV_P + FV_C;
+
+  // CAGR (annualized growth) from P to total (ignoring contributions): if P>0
+  let cagr = P>0 ? (Math.pow(total / P, 1/years) - 1) : null;
+
+  let html = `<div>Total Future Value: <strong>${total.toFixed(2)}</strong></div>`;
+  html += `<div>From principal: <strong>${FV_P.toFixed(2)}</strong>, contributions: <strong>${FV_C.toFixed(2)}</strong></div>`;
+  if(cagr !== null) html += `<div>Approx CAGR: <strong>${(cagr*100).toFixed(2)}%</strong></div>`;
+  document.getElementById('out').innerHTML = html;
+}
+</script>
+</body>
+</html>
