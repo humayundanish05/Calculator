@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mortgage</title>
+<style>
+ body{margin:0;background:#000;color:#fff;font-family:Inter;padding:24px}
+ .card{max-width:720px;background:#0f0f0f;margin:auto;padding:18px;border-radius:12px}
+ input{width:100%;padding:10px;margin-bottom:10px;border:none;border-radius:8px;background:#191919;color:#fff}
+ button{padding:10px;background:#0b7;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+ table{width:100%;border-collapse:collapse;margin-top:16px}
+ th,td{padding:6px;border-bottom:1px solid #222;text-align:right}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Mortgage + Extra Payments</h2>
+
+  <input id="p" type="number" placeholder="Principal">
+  <input id="r" type="number" step="0.01" placeholder="Rate %">
+  <input id="y" type="number" placeholder="Years">
+  <input id="extra" type="number" placeholder="Extra Monthly Payment (optional)">
+  
+  <button onclick="calc()">Calculate</button>
+  <a href="finance.html" style="color:#9f9;margin-left:12px">← Back</a>
+
+  <div id="out" style="margin-top:12px;color:#9f9"></div>
+  <div id="tableWrap"></div>
+</div>
+
+<script>
+function calc(){
+  const P = +document.getElementById("p").value;
+  const r = +document.getElementById("r").value/100/12;
+  const y = +document.getElementById("y").value;
+  const extra = +document.getElementById("extra").value || 0;
+
+  const n = y*12;
+  const emi = (P*r)/(1-Math.pow(1+r,-n));
+
+  let bal = P;
+  let out = [];
+  let m = 0;
+
+  while(bal>0){
+    m++;
+    const interest = bal*r;
+    let principal = emi + extra - interest;
+    if(principal > bal) principal = bal;
+    bal -= principal;
+    out.push({m, interest, principal, bal});
+    if(m>1200) break;
+  }
+
+  document.getElementById("out").innerHTML =
+    `Original EMI: <strong>${emi.toFixed(2)}</strong><br>
+     Paid off in <strong>${m} months</strong>`;
+
+  let html = `<table><tr><th>Month</th><th>Principal</th><th>Interest</th><th>Balance</th></tr>`;
+  out.forEach(x=>{
+    html += `<tr><td>${x.m}</td><td>${x.principal.toFixed(2)}</td><td>${x.interest.toFixed(2)}</td><td>${x.bal.toFixed(2)}</td></tr>`;
+  });
+  html += "</table>";
+  document.getElementById("tableWrap").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
