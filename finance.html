@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Finance Hub</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  body{margin:0;background:#000;color:#fff;font-family:Inter,system-ui;}
+  header{padding:18px;font-size:20px;font-weight:600;display:flex;gap:12px;align-items:center}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;padding:18px}
+  .card{background:#0f0f0f;padding:18px;border-radius:12px;display:flex;flex-direction:column;gap:12px;align-items:start}
+  a{color:inherit;text-decoration:none}
+  .icon{font-size:36px;opacity:0.9}
+  small{opacity:0.6}
+</style>
+</head>
+<body>
+<header>
+  Finance — Calculators
+  <span style="margin-left:auto;opacity:0.6">Modular • Client-side</span>
+</header>
+
+<div class="grid">
+  <div class="card">
+    <span class="material-icons icon">account_balance_wallet</span>
+    <a href="loan.html"><strong>Loan / EMI</strong></a>
+    <small>EMI, amortization table, total interest</small>
+  </div>
+
+  <div class="card">
+    <span class="material-icons icon">show_chart</span>
+    <a href="compound.html"><strong>Compound Interest</strong></a>
+    <small>Periodic compounding, contributions, CAGR</small>
+  </div>
+
+  <div class="card">
+    <span class="material-icons icon">paid</span>
+    <a href="#"><strong>Savings / Goal</strong></a>
+    <small>Future feature: target savings planner</small>
+  </div>
+
+  <div class="card">
+    <span class="material-icons icon">calculate</span>
+    <a href="#"><strong>NPV / IRR</strong></a>
+    <small>Future feature: cashflow analysis</small>
+  </div>
+</div>
+</body>
+</html>
